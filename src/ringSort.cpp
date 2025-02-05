@@ -86,10 +86,10 @@ void init_intake()
                                    int prev_speed = 0;
                                    while (!pros::Task::notify_take(true, 10))
                                    {
-                                     intake_mutex.lock();
+                                    //  intake_mutex.lock();
                                      int speed = intake_speed;
                                      bool antijam_temp = antijam;
-                                     intake_mutex.unlock();
+                                    //  intake_mutex.unlock();
 
                                      intake.move(speed);
                                      if (speed != prev_speed)
@@ -115,13 +115,13 @@ void init_intake()
 
 void set_intake_speed(int speed, bool jam)
 {
-  pros::Task intake_task2{[=]
-                          {
-                            intake_mutex.lock();
+  // pros::Task intake_task2{[=]
+  //                         {
+                            // intake_mutex.lock();
                             intake_speed = speed;
                             antijam = jam;
-                            intake_mutex.unlock();
-                          }};
+                            // intake_mutex.unlock();
+                          // }};
   // intake_task2.remove();
   // delete &intake_task2;
 }
@@ -209,9 +209,9 @@ void arm_to_pos()
       while (true)
       {
 
-        target_mutex.lock();
+        // target_mutex.lock();
         target = global_target;
-        target_mutex.unlock();
+        // target_mutex.unlock();
         if(prev_target!=target){
           count = 0;
         }
@@ -225,18 +225,18 @@ void arm_to_pos()
         if (speed < -127)
           speed = -127;
         if(count < 50){
-          arm_mutex.lock();
+          // arm_mutex.lock();
           if (!arm_move)
             arm.move(speed);
-          arm_mutex.unlock();
+          // arm_mutex.unlock();
           if(abs(error)<300)
               count++;
         }
         else{
-          arm_mutex.lock();
+          // arm_mutex.lock();
           if (!arm_move)
             arm.brake();
-          arm_mutex.unlock();
+          // arm_mutex.unlock();
         }
         pros::delay(10);
       }
