@@ -7,10 +7,10 @@
 true: display odometry data and will run the test auton
 false: display competition screen to choose different autons
 */
-bool testing = false;
+bool testing = true;
 
 int auton_status = 0;
-int test_auton = -2;
+int test_auton = 6;
 
 
 
@@ -33,7 +33,7 @@ void initialize() {
 
 	arm_to_pos();
 	arm_control.set_position(0);
-	mogo.set_value(true);
+	mogo.set_value(false);
 
 	// sort_thrower.set_value(true);
 
@@ -117,21 +117,13 @@ void autonomous() {
 void opcontrol() {
 	// intake_task->remove();
 	
-	arm.set_brake_mode_all(pros::motor_brake_mode_e::E_MOTOR_BRAKE_BRAKE);
+	arm.set_brake_mode_all(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 	left.set_brake_mode_all(pros::motor_brake_mode_e::E_MOTOR_BRAKE_BRAKE);
     right.set_brake_mode_all(pros::motor_brake_mode_e::E_MOTOR_BRAKE_BRAKE);
 	
 
-	bool pto_flag = true;
-	bool pto_pressed = true;
-	bool mogo_flag = true;
+	bool mogo_flag = false;
 	bool mogo_pressed = true;
-	bool claw_flag = true;
-	bool claw_pressed = true;
-	bool hang_flag = true;
-	bool hang_pressed = true;
-	bool deploy_flag = true;
-	bool deploy_pressed = true;
 	bool swiper_flag = false;
 	bool swiper_pressed = true;
 
@@ -158,7 +150,7 @@ void opcontrol() {
 		if(master.get_digital(DIGITAL_L1)){
 			if(!arm_pressed){
 				intake.move(-127);
-				pros::delay(30);
+				pros::delay(40);
 				intake.move(0);
 				arm_pressed = true;
 			}
@@ -166,12 +158,20 @@ void opcontrol() {
 			arm_move = true;
 			arm_mutex.unlock();
 			arm.move(127);
+			target_mutex.lock();
+			global_target=0;
+			// global_target=5000;
+			target_mutex.unlock();
 		}
 		else if(master.get_digital(DIGITAL_L2)){
 			arm_mutex.lock();
 			arm_move = true;
 			arm_mutex.unlock();
 			arm.move(-127);
+			target_mutex.lock();
+			global_target=0;
+			// global_target=5000;
+			target_mutex.unlock();
 		}
 		else if(master.get_digital(DIGITAL_L1) != 1 && arm_pressed){
 			arm_pressed = false;
@@ -183,8 +183,6 @@ void opcontrol() {
 			}
 			arm_mutex.unlock();
 		}
-
-
 
 		#pragma region intake r1
 		if(master.get_digital(DIGITAL_R1)){
@@ -211,44 +209,9 @@ void opcontrol() {
 		else if(master.get_digital(DIGITAL_DOWN) != 1 && mogo_pressed){
 			mogo_pressed = false;
 		}
-
-		
-		// else if(mogo_seated() && !mogo_flag && !mogo_pressed)
-		// {
-		// 	mogo.set_value(true);
-		// 	mogo_flag = true;
-		// }
-
-		// if(master.get_digital(DIGITAL_Y) && !hang_pressed){
-		// 	hang_flag = !hang_flag;
-		// 	hang.set_value(hang_flag);
-		// 	hang_pressed = true;
-		// }
-		// else if(master.get_digital(DIGITAL_Y) != 1 && hang_pressed){
-		// 	hang_pressed = false;
-		// }
 		
 		#pragma endregion mogo
 
-		if(master.get_digital(DIGITAL_RIGHT) && !swiper_pressed){
-			swiper_flag = !swiper_flag;
-			swiper.set_value(swiper_flag);
-			swiper_pressed = true;
-		}
-		else if(master.get_digital(DIGITAL_RIGHT) != 1 && swiper_pressed){
-			swiper_pressed = false;
-		}
-
-
-		#pragma region swiper b
-		// if(master.get_digital(DIGITAL_B) && !swiper_pressed){
-		// 	swiper_flag = !swiper_flag;
-		// 	swiper.set_value(swiper_flag);
-		// 	swiper_pressed = true;
-		// }
-		// else if(master.get_digital(DIGITAL_B) != 1 && swiper_pressed){
-		// 	swiper_pressed = false;
-		// }
 		if(master.get_digital(DIGITAL_B) && !b_pressed){
 			// swiper_flag = !swiper_flag;
 			b_pressed = true;
@@ -276,25 +239,12 @@ void opcontrol() {
 			
 
 			target_mutex.lock();
-			global_target=2600;
+			global_target=3100;
 			target_mutex.unlock();
 		}
 		else if(master.get_digital(DIGITAL_Y) != 1 && y_pressed){
 			y_pressed = false;
 		}
-
-		
-
-		// if(master.get_digital(DIGITAL_DOWN) && !deploy_pressed){
-		// 	deploy_flag = !deploy_flag;
-		// 	deploy.set_value(deploy_flag);
-		// 	deploy_pressed = true;
-		// }
-		// else if(master.get_digital(DIGITAL_DOWN) != 1 && deploy_pressed){
-		// 	deploy_pressed = false;
-		// }
-		
-		#pragma endregion swiper
 		pros::delay(20);                               // Run for 20 ms then update
 	}
 }

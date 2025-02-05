@@ -197,18 +197,25 @@ void arm_to_pos()
 {
   pros::Task arm_task_0{[=]
     {
-      lemlib::PID arm_pid(.07,0,.2);
+      lemlib::PID arm_pid(.05,0,.4);
       arm_pid.reset();
+      arm.set_brake_mode_all(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
       int target;
       int pos = arm_control.get_position();
       int error = target - pos;
       float speed;
+      int count = 0;
+      int prev_target;
       while (true)
       {
 
         target_mutex.lock();
         target = global_target;
         target_mutex.unlock();
+        if(prev_target!=target){
+          count = 0;
+        }
+        prev_target = target;
         pos = arm_control.get_position();
         error = target - pos;
         // if(abs(error)<100) error = 0;
@@ -217,10 +224,20 @@ void arm_to_pos()
           speed = 127;
         if (speed < -127)
           speed = -127;
-        arm_mutex.lock();
-        if (!arm_move)
-          arm.move(speed);
-        arm_mutex.unlock();
+        if(count < 50){
+          arm_mutex.lock();
+          if (!arm_move)
+            arm.move(speed);
+          arm_mutex.unlock();
+          if(abs(error)<300)
+              count++;
+        }
+        else{
+          arm_mutex.lock();
+          if (!arm_move)
+            arm.brake();
+          arm_mutex.unlock();
+        }
         pros::delay(10);
       }
     }};
