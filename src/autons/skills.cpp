@@ -48,7 +48,7 @@ void skills(){
     arm_move=false;
     // arm_mutex.unlock();
     // target_mutex.lock();
-    global_target=3100;
+    global_target=3000;
     // target_mutex.unlock();
     //mogo 1 get ring 2 move to ring
     set_intake_speed(127,false);
@@ -58,7 +58,7 @@ void skills(){
     pros::Task skills_task1{[=]
     {
         while(top_distance.get_distance()>100) pros::delay(10);
-        pros::delay(800);
+        pros::delay(1000);
         // target_mutex.lock();
         global_target=6000;
         // target_mutex.unlock();
@@ -134,7 +134,7 @@ void skills(){
     arm_move=false;
     // arm_mutex.unlock();
     // target_mutex.lock();
-    global_target=3100;
+    global_target=3000;
     // target_mutex.unlock();
     //mogo 2 get ring 2 move to ring
     set_intake_speed(127,false);
@@ -144,7 +144,7 @@ void skills(){
     pros::Task skills_task2{[=]
     {
         while(top_distance.get_distance()>100) pros::delay(10);
-        pros::delay(800);
+        pros::delay(1000);
         // target_mutex.lock();
         global_target=6000;
         // target_mutex.unlock();
@@ -210,11 +210,11 @@ void skills(){
     chassis.moveToPoint(-33,91,1000);
     //put ring in arm
     // target_mutex.lock();
-    global_target=3100;
+    global_target=3000;
     // target_mutex.unlock();
     set_intake_speed(127,false);
     while(top_distance.get_distance()>100) pros::delay(10);
-    pros::delay(800);
+    pros::delay(1000);
     // target_mutex.lock();
     global_target=6000;
     // target_mutex.unlock();
@@ -322,7 +322,7 @@ void skills(){
     // target_mutex.unlock();
     set_intake_speed(0);
     chassis.turnToHeading(313,1000,{.minSpeed=20,.earlyExitRange=3});
-    chassis.moveDistance(50,1000,{.forwards=false,.maxSpeed=100});
+    chassis.moveDistance(50,1000,{.forwards=false,.maxSpeed=60});
 
 
     return;
