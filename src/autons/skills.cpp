@@ -48,7 +48,7 @@ void skills(){
     arm_move=false;
     // arm_mutex.unlock();
     // target_mutex.lock();
-    global_target=3000;
+    global_target=2800;
     // target_mutex.unlock();
     //mogo 1 get ring 2 move to ring
     set_intake_speed(127,false);
@@ -57,7 +57,7 @@ void skills(){
     //mogo 1 task that when the ring is on the arm lift the arm up out of the way of other intaked rings
     pros::Task skills_task1{[=]
     {
-        while(top_distance.get_distance()>100) pros::delay(10);
+        while(top_distance.get_distance()>50) pros::delay(10);
         pros::delay(1000);
         // target_mutex.lock();
         global_target=6000;
@@ -134,7 +134,7 @@ void skills(){
     arm_move=false;
     // arm_mutex.unlock();
     // target_mutex.lock();
-    global_target=3000;
+    global_target=2800;
     // target_mutex.unlock();
     //mogo 2 get ring 2 move to ring
     set_intake_speed(127,false);
@@ -143,7 +143,7 @@ void skills(){
     //mogo 2 task that when the ring is on the arm lift the arm up out of the way of other intaked rings
     pros::Task skills_task2{[=]
     {
-        while(top_distance.get_distance()>100) pros::delay(10);
+        while(top_distance.get_distance()>50) pros::delay(10);
         pros::delay(1000);
         // target_mutex.lock();
         global_target=6000;
@@ -204,16 +204,16 @@ void skills(){
     chassis.turnToPoint(-25,85,1000);
     set_intake_speed(60);
     chassis.moveToPoint(-25,85,4000);
-    while(top_distance.get_distance()>100 &&chassis.isInMotion()) pros::delay(10);
+    while(top_distance.get_distance()>50 &&chassis.isInMotion()) pros::delay(10);
     set_intake_speed(0);
     // while(chassis.getPose().y<85 &&chassis.isInMotion()) pros::delay(10);
     chassis.moveToPoint(-33,91,1000);
     //put ring in arm
     // target_mutex.lock();
-    global_target=3000;
+    global_target=2800;
     // target_mutex.unlock();
     set_intake_speed(127,false);
-    while(top_distance.get_distance()>100) pros::delay(10);
+    while(top_distance.get_distance()>50) pros::delay(10);
     pros::delay(1000);
     // target_mutex.lock();
     global_target=6000;
@@ -247,7 +247,7 @@ void skills(){
     set_intake_speed(0);
     //mogo 3 score on alliance stake
     chassis.moveDistance(50,1000,{.maxSpeed = 70});
-    chassis.moveDistance(9,1000,{.forwards=false},false);
+    chassis.moveDistance(9,1000,{.forwards=false});
     set_intake_speed(-50);
     // arm_mutex.lock();
     arm_move=true;

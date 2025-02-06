@@ -14,6 +14,7 @@ int test_auton = 6;
 
 
 
+
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -101,6 +102,7 @@ void autonomous() {
 	else run_auton(auton_status);
 }
 
+bool intake_on = true;
 /**
  * Runs the operator control code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -136,21 +138,27 @@ void opcontrol() {
 		intake_task->notify();
 	}
 	// init_driver_intake();
-
-	while (true) {
 		#pragma region arcade
 		// Arcade control scheme
-		int dir = master.get_analog(ANALOG_LEFT_Y);    // Gets amount forward/backward from left joystick
-		int turn = master.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
-		left.move(dir+turn);
-		right.move(dir-turn);
+		
+		pros::Task drive_task([&]() {
+			while (true) {
+				int dir = master.get_analog(ANALOG_LEFT_Y);    // Gets amount forward/backward from left joystick
+				int turn = master.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
+				left.move(dir+turn);
+				right.move(dir-turn);
+				// delay to save resources
+				pros::delay(20);
+			}
+		});
 		#pragma endregion arcade
 
-		
+	while (true) {
 		if(master.get_digital(DIGITAL_L1)){
 			if(!arm_pressed){
-				intake.move(-127);
-				pros::delay(40);
+				intake.move(-60);
+				arm.move(127);
+				pros::delay(100);
 				intake.move(0);
 				arm_pressed = true;
 			}
@@ -180,20 +188,21 @@ void opcontrol() {
 			// arm_mutex.lock();
 			if(arm_move){
 				arm.brake();
+				global_target=0;
 			}
 			// arm_mutex.unlock();
 		}
 
 		#pragma region intake r1
-		if(master.get_digital(DIGITAL_R1)){
+		if(master.get_digital(DIGITAL_R1) && intake_on){
 			intake.move(127);
 			// set_intake_speed(127);
 		}
-		else if(master.get_digital(DIGITAL_R2)){
+		else if(master.get_digital(DIGITAL_R2) && intake_on){
 			intake.move(-127);
 			// set_intake_speed(-127);
 		}
-		else{
+		else if(intake_on){
 			intake.move(0);
 			// set_intake_speed(0);
 		}
@@ -201,13 +210,21 @@ void opcontrol() {
 
 
 		#pragma region mogo x
-		if(master.get_digital(DIGITAL_DOWN) && !mogo_pressed){
+		
+
+		if(master.get_digital(DIGITAL_A) && !mogo_pressed){
 			mogo_flag = !mogo_flag;
 			mogo.set_value(mogo_flag);
 			mogo_pressed = true;
+			pros::delay(1000);
 		}
-		else if(master.get_digital(DIGITAL_DOWN) != 1 && mogo_pressed){
+		else if(master.get_digital(DIGITAL_A) != 1 && mogo_pressed){
 			mogo_pressed = false;
+		}
+		else if(mogo_seated() && mogo_flag == false){
+			mogo_flag = !mogo_flag;
+			pros::delay(50);
+			mogo.set_value(mogo_flag);
 		}
 		
 		#pragma endregion mogo
@@ -221,11 +238,34 @@ void opcontrol() {
 			
 		
 			// target_mutex.lock();
-			global_target=100;
+			global_target=2800;
 			// global_target=5000;
 			// target_mutex.unlock();
+			pros::Task drive_task2([&]()
+			{
+				while(top_distance.get_distance()>50) {
+					if( master.get_digital(DIGITAL_Y) || master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2))
+						// return;
+						goto jmp;
+					pros::delay(10);
+				}
+				arm.set_brake_mode_all(MOTOR_BRAKE_BRAKE);
+				pros::delay(1000);
+				// target_mutex.lock();
+				global_target=6000;
+				// target_mutex.unlock();
+				intake_on = false;
+				intake.move(-50);
+				pros::delay(500);
+				intake_on = true;
+				arm.set_brake_mode_all(MOTOR_BRAKE_HOLD);
+				jmp:
+			});
 			
 		}
+
+		
+
 		else if(master.get_digital(DIGITAL_B) != 1 && b_pressed){
 			b_pressed = false;
 		}
@@ -239,11 +279,23 @@ void opcontrol() {
 			
 
 			// target_mutex.lock();
-			global_target=3100;
+			global_target=100;
 			// target_mutex.unlock();
 		}
 		else if(master.get_digital(DIGITAL_Y) != 1 && y_pressed){
 			y_pressed = false;
+		}
+
+		if(master.get_digital(DIGITAL_UP)){
+			chassis.moveDistance(8,1000,{.forwards=false},false);
+			intake.move(-50);
+			// arm_mutex.lock();
+			arm_move=true;
+			// arm_mutex.unlock();
+			arm.move(127);
+			pros::delay(1000);
+			intake.move(127);
+			arm.move(0);
 		}
 		pros::delay(20);                               // Run for 20 ms then update
 	}
