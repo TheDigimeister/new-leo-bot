@@ -28,9 +28,9 @@ void blueneg_sigWP()
 
     // get 2 rings
     set_intake_speed(127);
-    chassis.turnToPoint(34, 47.5, 1000, {.minSpeed = 5, .earlyExitRange = 3});
-    chassis.moveToPoint(34, 44, 1000, {.minSpeed = 20, .earlyExitRange = 3});
-    chassis.turnToPoint(48, 45, 1000, {.minSpeed = 20, .earlyExitRange = 3});
+    chassis.turnToPoint(34, 45.5, 1000, {.minSpeed = 5, .earlyExitRange = 3});
+    chassis.moveToPoint(34, 41.5, 1000, {.minSpeed = 20, .earlyExitRange = 3});
+    chassis.turnToPoint(48, 42.5, 1000, {.minSpeed = 20, .earlyExitRange = 3});
     chassis.moveToPoint(48, 45, 1000, {.minSpeed = 20, .earlyExitRange = 3}, false);
     chassis.moveToPoint(14, 37, 1000, {.forwards = false, .minSpeed = 20, .earlyExitRange = 3});
     set_intake_speed(80);

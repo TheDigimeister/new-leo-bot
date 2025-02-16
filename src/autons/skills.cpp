@@ -123,6 +123,7 @@ void skills()
     chassis.moveToPoint(33, 16, 4000, {.forwards = false, .minSpeed = 5, .earlyExitRange = 40});
     pros::Task getridofring{[=]
                             {
+                                arm_move = true;
                                 arm.move(127);
                                 pros::delay(700);
                                 arm.move(-127);

@@ -306,10 +306,10 @@ void run_auton(int selected)
         bluepos_teamwork_grab3rdmogo();
         break;
     case -2:
-        blueneg_teamwork();
+        blueneg_sigWP();
         break;
     case -1:
-        blueneg_sigWP();
+        blueneg_teamwork();
         break;
     case 1:
         redneg_teamwork();

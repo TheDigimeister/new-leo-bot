@@ -28,9 +28,9 @@ void blueneg_teamwork()
 
     // get 2 rings
     set_intake_speed(127);
-    chassis.turnToPoint(34, 47.5, 1000, {.minSpeed = 5, .earlyExitRange = 3});
-    chassis.moveToPoint(34, 44, 1000, {.minSpeed = 20, .earlyExitRange = 3});
-    chassis.turnToPoint(48, 45, 1000, {.minSpeed = 20, .earlyExitRange = 3});
+    chassis.turnToPoint(34, 45.5, 1000, {.minSpeed = 5, .earlyExitRange = 3});
+    chassis.moveToPoint(34, 42.5, 1000, {.minSpeed = 20, .earlyExitRange = 3});
+    chassis.turnToPoint(48, 43.5, 1000, {.minSpeed = 20, .earlyExitRange = 3});
     chassis.moveToPoint(48, 45, 1000, {.minSpeed = 20, .earlyExitRange = 3}, false);
     chassis.moveToPoint(14, 37, 1000, {.forwards = false, .minSpeed = 20, .earlyExitRange = 3});
     set_intake_speed(80);
@@ -59,7 +59,7 @@ void blueneg_teamwork()
                                 set_intake_speed(0);
                             }};
     // touch bar
-    chassis.turnToHeading(10, 500, {.maxSpeed = 60});
+    chassis.turnToHeading(17, 500, {.maxSpeed = 60});
     chassis.moveDistance(8, 1000);
 }
 
