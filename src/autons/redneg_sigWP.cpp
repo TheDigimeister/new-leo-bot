@@ -1,93 +1,146 @@
 #include "main.h"
-
-//new bot red - finals 5 ring
-void red2(){
- // setup
-    chassis.setPose(0,0,146);
+// red- signature WP
+void redneg_sigWP()
+{
+    chassis.setPose(0, 0, 146);
     intake.set_encoder_units_all(MOTOR_ENCODER_ROTATIONS);
     left.set_brake_mode_all(pros::motor_brake_mode_e::E_MOTOR_BRAKE_BRAKE);
     right.set_brake_mode_all(pros::motor_brake_mode_e::E_MOTOR_BRAKE_BRAKE);
-    mogo.set_value(true);
+    mogo.set_value(false);
 
-    //score ring
-    chassis.moveDistance(7,1000);
-    arm.move(127);
-    pros::delay(700);
+    // score ring
+    chassis.moveDistance(6.5, 1000);
+    arm.move(100);
+    pros::delay(800);
     arm.brake();
-    
 
     // get mogo
-    chassis.moveToPoint(-15, 31,4000,{.forwards = false,.maxSpeed=80});
+    chassis.moveToPoint(-17, 33, 4000, {.forwards = false, .maxSpeed = 80});
     pros::delay(500);
-    arm_mutex.lock();
-    arm_move=false;
-    arm_mutex.unlock();
-
-    target_mutex.lock();
-    global_target=100;
-    target_mutex.unlock();
-    while(!mogo_seated() && chassis.isInMotion()) pros::delay(10);
+    arm_move = false;
+    global_target = 100;
+    while (!mogo_seated() && chassis.isInMotion())
+        pros::delay(10);
     pros::delay(50);
-    mogo.set_value(false);
-    // pros::delay(50);
-    chassis.cancelMotion();
-    left.brake();
-    right.brake();
-    pros::delay(100);
-    
-
-    //get 2 rings
+    mogo.set_value(true);
+    global_target = 10000;
+    // get 2 rings
     set_intake_speed(127);
-    chassis.swingToPoint(-30,43.5,DriveSide::LEFT,2000,{.maxSpeed=80,.minSpeed=5, .earlyExitRange = 10});
-    chassis.turnToPoint(-30,43.5,500,{.minSpeed=20,.earlyExitRange=3});
-    chassis.moveToPoint(-30,43.5,1000,{.minSpeed=20,.earlyExitRange=3});
-    chassis.turnToPoint(-48,43.5,1000,{.minSpeed=20,.earlyExitRange=3});
-    chassis.moveToPoint(-48,43.5,1000,{.minSpeed=20,.earlyExitRange=3});
-
-    chassis.moveToPoint(-14, 31,1000,{.forwards=false,.minSpeed=20,.earlyExitRange=3});
-    chassis.turnToPoint(-36,28,1000,{.minSpeed=20,.earlyExitRange=3});
-    fast_move(-36,28,2000,true);
-    
-    chassis.turnToPoint(-50,-10,1000,{.minSpeed=20,.earlyExitRange=3});
-    chassis.moveDistance(40,2000,{.minSpeed=5,.earlyExitRange=3});
-    chassis.moveDistance(40,700);
-    chassis.moveDistance(10,1000,{.forwards=false,.minSpeed=5,.earlyExitRange=3});
-
-
-    //touch bar
-    // target_mutex.lock();
-    // global_target=20000;
-    // target_mutex.unlock();
-
-    chassis.turnToPoint(30,15,1000,{.minSpeed=5,.earlyExitRange=3});
-    chassis.moveToPoint(30,15,2000,{.minSpeed=5,.earlyExitRange=3});
-    pros::Task skills_task2{[=]
-    {
-        while(top_distance.get_distance()>100) pros::delay(10);
-        pros::delay(500);
-        set_intake_speed(0);
-    }};
-    
-    //touch bar
-    // chassis.moveToPoint(-16,10,2000,{.forwards=false,.minSpeed=5,.earlyExitRange=3},false);
-    // arm_mutex.lock();
-    // arm_move=true;
-    // arm_mutex.unlock();
-    // arm.move(0);
-    // chassis.moveToPoint(-3,37,2000);
-
-    //go to corner
-    // chassis.moveToPoint(60,-5,2000);
-    chassis.moveToPoint(70,-13,2000);
-    swiper.set_value(true);
-    chassis.turnToHeading(-40,1000,{},false);
+    chassis.turnToPoint(-34, 41, 1000, {.minSpeed = 5, .earlyExitRange = 3});
+    chassis.moveToPoint(-34, 41, 1000, {.minSpeed = 20, .earlyExitRange = 3});
+    chassis.turnToPoint(-48, 41, 1000, {.minSpeed = 20, .earlyExitRange = 3});
+    chassis.moveToPoint(-48, 41, 1000, {.minSpeed = 20, .earlyExitRange = 3}, false);
+    chassis.moveToPoint(-14, 31, 1000, {.forwards = false, .minSpeed = 20, .earlyExitRange = 3});
+    set_intake_speed(80);
+    chassis.turnToPoint(-36, 28, 1000, {.minSpeed = 20, .earlyExitRange = 3}, false);
+    set_intake_speed(127);
+    fast_move(-36, 28, 2000, false);
+    // get middle ring
+    chassis.turnToPoint(40.5, 8.5, 2000, {.minSpeed = 50}, false);
+    chassis.moveToPoint(40.5, 8.5, 2000, {.minSpeed = 100});
+    set_intake_speed(100);
+    // for signature
+    pros::delay(600);
+    mogo.set_value(false);
+    set_intake_speed(110);
+    getring();
+    // antijamn_intake(0);
+    chassis.turnToPoint(38.5, 23.2, 2000, {.forwards = false, .minSpeed = 70});
+    chassis.moveToPoint(38.5, 23.2, 4000, {.forwards = false, .minSpeed = 90});
+    while (!mogo_seated())
+        pros::delay(10);
+    pros::delay(50);
+    mogo.set_value(true);
+    // antijamn_intake(110);
+    chassis.turnToPoint(52, 37, 2000, {.minSpeed = 70}, false);
+    set_intake_speed(127);
+    chassis.moveToPoint(52, 37, 4000, {.minSpeed = 85});
+    chassis.moveToPoint(15, 42, 4000, {.forwards = false, .minSpeed = 50}, false);
     set_intake_speed(0);
-    // mogo.set_value(true);
-    swiper.set_value(false);
-    // set_intake_speed(-127);
 }
+// new bot red - finals 5 ring
+//  void red2(){
+//   // setup
+//      chassis.setPose(0,0,146);
+//      intake.set_encoder_units_all(MOTOR_ENCODER_ROTATIONS);
+//      left.set_brake_mode_all(pros::motor_brake_mode_e::E_MOTOR_BRAKE_BRAKE);
+//      right.set_brake_mode_all(pros::motor_brake_mode_e::E_MOTOR_BRAKE_BRAKE);
+//      mogo.set_value(true);
 
+//     //score ring
+//     chassis.moveDistance(7,1000);
+//     arm.move(127);
+//     pros::delay(700);
+//     arm.brake();
 
+//     // get mogo
+//     chassis.moveToPoint(-15, 31,4000,{.forwards = false,.maxSpeed=80});
+//     pros::delay(500);
+//     arm_mutex.lock();
+//     arm_move=false;
+//     arm_mutex.unlock();
+
+//     target_mutex.lock();
+//     global_target=100;
+//     target_mutex.unlock();
+//     while(!mogo_seated() && chassis.isInMotion()) pros::delay(10);
+//     pros::delay(50);
+//     mogo.set_value(false);
+//     // pros::delay(50);
+//     chassis.cancelMotion();
+//     left.brake();
+//     right.brake();
+//     pros::delay(100);
+
+//     //get 2 rings
+//     set_intake_speed(127);
+//     chassis.swingToPoint(-30,43.5,DriveSide::LEFT,2000,{.maxSpeed=80,.minSpeed=5, .earlyExitRange = 10});
+//     chassis.turnToPoint(-30,43.5,500,{.minSpeed=20,.earlyExitRange=3});
+//     chassis.moveToPoint(-30,43.5,1000,{.minSpeed=20,.earlyExitRange=3});
+//     chassis.turnToPoint(-48,43.5,1000,{.minSpeed=20,.earlyExitRange=3});
+//     chassis.moveToPoint(-48,43.5,1000,{.minSpeed=20,.earlyExitRange=3});
+
+//     chassis.moveToPoint(-14, 31,1000,{.forwards=false,.minSpeed=20,.earlyExitRange=3});
+//     chassis.turnToPoint(-36,28,1000,{.minSpeed=20,.earlyExitRange=3});
+//     fast_move(-36,28,2000,true);
+
+//     chassis.turnToPoint(-50,-10,1000,{.minSpeed=20,.earlyExitRange=3});
+//     chassis.moveDistance(40,2000,{.minSpeed=5,.earlyExitRange=3});
+//     chassis.moveDistance(40,700);
+//     chassis.moveDistance(10,1000,{.forwards=false,.minSpeed=5,.earlyExitRange=3});
+
+//     //touch bar
+//     // target_mutex.lock();
+//     // global_target=20000;
+//     // target_mutex.unlock();
+
+//     chassis.turnToPoint(30,15,1000,{.minSpeed=5,.earlyExitRange=3});
+//     chassis.moveToPoint(30,15,2000,{.minSpeed=5,.earlyExitRange=3});
+//     pros::Task skills_task2{[=]
+//     {
+//         while(top_distance.get_distance()>100) pros::delay(10);
+//         pros::delay(500);
+//         set_intake_speed(0);
+//     }};
+
+//     //touch bar
+//     // chassis.moveToPoint(-16,10,2000,{.forwards=false,.minSpeed=5,.earlyExitRange=3},false);
+//     // arm_mutex.lock();
+//     // arm_move=true;
+//     // arm_mutex.unlock();
+//     // arm.move(0);
+//     // chassis.moveToPoint(-3,37,2000);
+
+//     //go to corner
+//     // chassis.moveToPoint(60,-5,2000);
+//     chassis.moveToPoint(70,-13,2000);
+//     swiper.set_value(true);
+//     chassis.turnToHeading(-40,1000,{},false);
+//     set_intake_speed(0);
+//     // mogo.set_value(true);
+//     swiper.set_value(false);
+//     // set_intake_speed(-127);
+// }
 
 // void red2(){
 //     chassis.setPose(0,0,12);
@@ -126,11 +179,10 @@ void red2(){
 //     pros::delay(100);
 //     left.move(0);
 //     right.move(0);
-    
 
 //     //get mogo
 //     chassis.turnToPoint(-12,28,2000,{.forwards=false},false);
-    
+
 //     // chassis.moveToPoint(-12,28,2000,{.forwards=false});
 //     chassis.moveDistance(40,3000,{.forwards=false,.maxSpeed=60});
 //     swiper.set_value(false);
@@ -167,9 +219,6 @@ void red2(){
 //     // chassis.moveDistance(40,10000,{.maxSpeed=30,.minSpeed=30,.earlyExitRange=3},false);
 //     //end
 
-
-
-
 //     chassis.turnToPoint(-4,-5,2000,{.forwards=false,.minSpeed = 10,.earlyExitRange=5});
 //     chassis.moveToPoint(-4,-5,2000,{.forwards=false},false);
 //     chassis.turnToPoint(22,-12,2000,{},false);
@@ -188,8 +237,6 @@ void red2(){
 //     chassis.turnToPoint(32,28,3000);
 //     chassis.moveDistance(6,1000,{.forwards=false,.minSpeed=30,.earlyExitRange=3});
 //     chassis.moveDistance(42,10000,{.maxSpeed=30,.minSpeed=30,.earlyExitRange=3},false);
-
-    
 
 //     chassis.moveDistance(15,2000,{.forwards=false},false);
 //     pros::delay(500);
@@ -223,11 +270,10 @@ void red2(){
 //     pros::delay(100);
 //     left.move(0);
 //     right.move(0);
-    
 
 //     //get mogo
 //     chassis.turnToPoint(-12,28,1000,{.forwards=false},false);
-    
+
 //     // chassis.moveToPoint(-12,28,2000,{.forwards=false});
 //     chassis.moveDistance(40,3000,{.forwards=false,.maxSpeed=60});
 //     // chassis.waitUntil(15);
@@ -246,9 +292,6 @@ void red2(){
 //     // pros::delay(200);
 //     // intake.move(127);
 //     // intake.move(0);
-
-
-
 
 //     chassis.turnToPoint(-4,-5,2000,{.forwards=false,.minSpeed = 10,.earlyExitRange=5});
 //     chassis.moveToPoint(-4,-5,2000,{.forwards=false},false);
@@ -280,4 +323,3 @@ void red2(){
 //     mogo.set_value(false);
 
 // }
-

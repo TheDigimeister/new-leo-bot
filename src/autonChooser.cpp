@@ -1,225 +1,335 @@
 #include "main.h"
 
-int convert_bit(int input){
-    if(input & LCD_BTN_LEFT){
+int convert_bit(int input)
+{
+    if (input & LCD_BTN_LEFT)
+    {
         return -1;
     }
-    else if(input & LCD_BTN_CENTER){
+    else if (input & LCD_BTN_CENTER)
+    {
         return 100;
     }
-    else if(input & LCD_BTN_RIGHT){
+    else if (input & LCD_BTN_RIGHT)
+    {
         return 1;
     }
-    else return 0;
+    else
+        return 0;
 }
 
-
-
-void chooser(int& status){
+void chooser(int &status)
+{
     bool set_text = false;
     int selected = 0;
 
     while (true)
     {
-        if(master.get_digital(DIGITAL_LEFT)) break;
+        if (pros::competition::get_status() == 4)
+            break;
+        if (master.get_digital(DIGITAL_LEFT))
+            break;
         selected = convert_bit(pros::lcd::read_buttons());
         // printf("%d , %d\n",pros::lcd::read_buttons(),status);
-        if(status == -5){
-            if(!set_text){
-                pros::lcd::set_text(1, "    blue + finals   ");
+        if (status == -6)
+        {
+            if (!set_text)
+            {
+                pros::lcd::set_text(1, "BLUE(+)POS FINALS NO GRAB 3RD MOGO");
                 set_text = true;
             }
-            if(selected != 0){
-                set_text=false;
-                if(selected == 100) return;
-                else status += selected;
+            if (selected != 0)
+            {
+                set_text = false;
+                if (selected == 100)
+                    return;
+                else
+                    status += selected;
                 pros::delay(500);
                 continue;
             }
         }
-        else if(status == -4){
-            if(!set_text){
-                pros::lcd::set_text(1, "    blue + teamwork   ");
+        else if (status == -5)
+        {
+            if (!set_text)
+            {
+                pros::lcd::set_text(1, "BLUE(+)POS FINALS GRAB 3RD MOGO");
                 set_text = true;
             }
-            if(selected != 0){
-                set_text=false;
-                if(selected == 100) return;
-                else status += selected;
+            if (selected != 0)
+            {
+                set_text = false;
+                if (selected == 100)
+                    return;
+                else
+                    status += selected;
                 pros::delay(500);
                 continue;
             }
         }
-        else if(status == -3){
-            if(!set_text){
-                pros::lcd::set_text(1, "    blue - finals 6 ring   ");
+        else if (status == -4)
+        {
+            if (!set_text)
+            {
+                pros::lcd::set_text(1, "BLUE(+)POS TEAMWORK NO GRAB 3RD MOGO");
                 set_text = true;
             }
-            if(selected != 0){
-                set_text=false;
-                if(selected == 100) return;
-                else status += selected;
+            if (selected != 0)
+            {
+                set_text = false;
+                if (selected == 100)
+                    return;
+                else
+                    status += selected;
                 pros::delay(500);
                 continue;
             }
         }
-        else if(status == -2){
-            if(!set_text){
-                pros::lcd::set_text(1, "    blue - finals 5 ring   ");
+        else if (status == -3)
+        {
+            if (!set_text)
+            {
+                pros::lcd::set_text(1, "BLUE(+)POS TEAMWORK GRAB 3RD MOGO");
                 set_text = true;
             }
-            if(selected != 0){
-                set_text=false;
-                if(selected == 100) return;
-                else status += selected;
+            if (selected != 0)
+            {
+                set_text = false;
+                if (selected == 100)
+                    return;
+                else
+                    status += selected;
                 pros::delay(500);
                 continue;
             }
         }
-        else if(status == -1){
-            if(!set_text){
-                pros::lcd::set_text(1, "    blue - teamwork   ");
+        else if (status == -2)
+        {
+            if (!set_text)
+            {
+                pros::lcd::set_text(1, "    BLUE(-)NEG SIG WP   ");
                 set_text = true;
             }
-            if(selected != 0){
-                set_text=false;
-                if(selected == 100) return;
-                else status += selected;
+            if (selected != 0)
+            {
+                set_text = false;
+                if (selected == 100)
+                    return;
+                else
+                    status += selected;
                 pros::delay(500);
                 continue;
             }
         }
-        else if(status == 0){
-            if(!set_text){
-                pros::lcd::set_text(1, "<-blue       choose       red->");
+        else if (status == -1)
+        {
+            if (!set_text)
+            {
+                pros::lcd::set_text(1, "    BLUE(-)NEG TEAMWORK  ");
                 set_text = true;
             }
-            if(selected != 0){
-                set_text=false;
-                if(selected != 100) status += selected;
+            if (selected != 0)
+            {
+                set_text = false;
+                if (selected == 100)
+                    return;
+                else
+                    status += selected;
                 pros::delay(500);
                 continue;
             }
         }
-        else if(status == 1){
-            if(!set_text){
-                pros::lcd::set_text(1, "    red - teamwork  ");
+        else if (status == 0)
+        {
+            if (!set_text)
+            {
+                pros::lcd::set_text(1, "<-BLUE       CHOOSE       RED->");
                 set_text = true;
             }
-            if(selected != 0){
-                set_text=false;
-                if(selected == 100) return;
-                else status += selected;
+            if (selected != 0)
+            {
+                set_text = false;
+                if (selected != 100)
+                    status += selected;
                 pros::delay(500);
                 continue;
             }
         }
-        else if(status == 2){
-            if(!set_text){
-                pros::lcd::set_text(1, "    red - finals 5 ring   ");
+        else if (status == 1)
+        {
+            if (!set_text)
+            {
+                pros::lcd::set_text(1, "    RED(-)NEG TEAMWORK  ");
                 set_text = true;
             }
-            if(selected != 0){
-                set_text=false;
-                if(selected == 100) return;
-                else status += selected;
+            if (selected != 0)
+            {
+                set_text = false;
+                if (selected == 100)
+                    return;
+                else
+                    status += selected;
                 pros::delay(500);
                 continue;
             }
         }
-        else if(status == 3){
-            if(!set_text){
-                pros::lcd::set_text(1, "    red - finals 6 ring   ");
+        else if (status == 2)
+        {
+            if (!set_text)
+            {
+                pros::lcd::set_text(1, "    RED(-)NEG SIG WP   ");
                 set_text = true;
             }
-            if(selected != 0){
-                set_text=false;
-                if(selected == 100) return;
-                else status += selected;
+            if (selected != 0)
+            {
+                set_text = false;
+                if (selected == 100)
+                    return;
+                else
+                    status += selected;
                 pros::delay(500);
                 continue;
             }
         }
-        else if(status == 4){
-            if(!set_text){
-                pros::lcd::set_text(1, "    red + teamwork   ");
+        else if (status == 3)
+        {
+            if (!set_text)
+            {
+                pros::lcd::set_text(1, "RED(+)POS TEAMWORK GRAB 3RD MOGO");
                 set_text = true;
             }
-            if(selected != 0){
-                set_text=false;
-                if(selected == 100) return;
-                else status += selected;
+            if (selected != 0)
+            {
+                set_text = false;
+                if (selected == 100)
+                    return;
+                else
+                    status += selected;
                 pros::delay(500);
                 continue;
             }
         }
-        else if(status == 5){
-            if(!set_text){
-                pros::lcd::set_text(1, "    red + finals   ");
+        else if (status == 4)
+        {
+            if (!set_text)
+            {
+                pros::lcd::set_text(1, "RED(+)POS TEAMWORK NO GRAB 3RD MOGO");
                 set_text = true;
             }
-            if(selected != 0){
-                set_text=false;
-                if(selected == 100) return;
-                else status += selected;
+            if (selected != 0)
+            {
+                set_text = false;
+                if (selected == 100)
+                    return;
+                else
+                    status += selected;
                 pros::delay(500);
                 continue;
             }
         }
-        else if(status == 6){
-            if(!set_text){
-                pros::lcd::set_text(1, "    skills   ");
+        else if (status == 5)
+        {
+            if (!set_text)
+            {
+                pros::lcd::set_text(1, "RED(+)POS FINALS GRAB 3RD MOGO");
                 set_text = true;
             }
-            if(selected != 0){
-                set_text=false;
-                if(selected == 100) return;
-                else status += selected;
+            if (selected != 0)
+            {
+                set_text = false;
+                if (selected == 100)
+                    return;
+                else
+                    status += selected;
                 pros::delay(500);
                 continue;
             }
         }
-        else status = 0;
+        else if (status == 6)
+        {
+            if (!set_text)
+            {
+                pros::lcd::set_text(1, "RED(+)POS FINALS NO GRAB 3RD MOGO");
+                set_text = true;
+            }
+            if (selected != 0)
+            {
+                set_text = false;
+                if (selected == 100)
+                    return;
+                else
+                    status += selected;
+                pros::delay(500);
+                continue;
+            }
+        }
+        else if (status == 7)
+        {
+            if (!set_text)
+            {
+                pros::lcd::set_text(1, "    SKILLS   ");
+                set_text = true;
+            }
+            if (selected != 0)
+            {
+                set_text = false;
+                if (selected == 100)
+                    return;
+                else
+                    status += selected;
+                pros::delay(500);
+                continue;
+            }
+        }
+        else
+            status = 0;
 
         selected = 0;
         pros::delay(20);
     }
 }
 
-void run_auton(int selected){
+void run_auton(int selected)
+{
     switch (selected)
     {
+    case -6:
+        bluepos_finals_nograb3rdmogo();
+        break;
     case -5:
-        blue5();
+        bluepos_finals_grab3rdmogo();
         break;
     case -4:
-        blue4();
+        bluepos_teamwork_nograb3rdmogo();
         break;
     case -3:
-        blue3();
+        bluepos_teamwork_grab3rdmogo();
         break;
     case -2:
-        blue2();
+        blueneg_teamwork();
         break;
     case -1:
-        blue1();
+        blueneg_sigWP();
         break;
     case 1:
-        red1();
+        redneg_teamwork();
         break;
     case 2:
-        red2();
+        redneg_sigWP();
         break;
     case 3:
-        red3();
+        redpos_teamwork_grab3rdmogo();
         break;
     case 4:
-        red4();
+        redpos_teamwork_nograb3rdmogo();
         break;
     case 5:
-        red5();
+        redpos_finals_grab3rdmogo();
         break;
     case 6:
+        redpos_finals_nograb3rdmogo();
+        break;
+    case 7:
         skills();
         break;
     default:

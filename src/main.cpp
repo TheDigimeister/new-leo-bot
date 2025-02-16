@@ -1,65 +1,71 @@
 #include "main.h"
 
-
-
-
 /*
 true: display odometry data and will run the test auton
 false: display competition screen to choose different autons
 */
-bool testing = true;
-
+bool testing = false;
+bool swiperstate = false;
+bool swiperon = false;
+bool swiperoff = false;
 int auton_status = 0;
-int test_auton = 6;
-
-
-
-
+int test_auton = REDPOS_FINALS_NOGRAB3RDMOGO;
+pros::Mutex intakemutex;
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
  * All other competition modes are blocked by initialize; it is recommended
  * to keep execution time for this mode under a few seconds.
  */
-void initialize() {
+void initialize()
+{
 	pros::lcd::initialize();
 	pros::delay(100);
 
 	// chassis = init_drive();
 	chassis.calibrate();
-    pros::delay(100);
-    // chassis.setPose(0,0,146);
-	chassis.setPose(0,0,0);
+	pros::delay(100);
+	chassis.setPose(0, 0, 0);
+	// chassis.setPose(0,0,0);
 	// chassis.setPose(0,0,-12);
-
 	arm_to_pos();
 	arm_control.set_position(0);
 	mogo.set_value(false);
-
+	init_intake();
+	setup();
+	// sort(BLUECOLOR);
 	// sort_thrower.set_value(true);
-
-	if(testing){
-		if (test_auton < 0) sort(REDCOLOR);
-		else sort(BLUECOLOR);
-		pros::Task screen_task([&]() {
+	intakerotation.set_position(0);
+	set_intake_speed(0);
+	if (testing)
+	{
+		// if (test_auton < 0)
+		// 	sort(REDCOLOR);
+		// else
+		// 	sort(BLUECOLOR);
+		pros::Task screen_task([&]()
+							   {
 			while (true) {
 				// print robot location to the brain screen
-				pros::lcd::print(1, "X: %f", chassis.getPose().x); // x
+				pros::lcd::print(1,"X: %f", chassis.getPose().x); // x
 				pros::lcd::print(2, "Y: %f", chassis.getPose().y); // y
 				pros::lcd::print(3, "Theta: %f", chassis.getPose().theta); // heading
 				pros::lcd::print(4, "angle: %d", arm_control.get_position()); // heading
+				pros::lcd::print(5, "intake: %d",intakerotation.get_position()); 
 				// delay to save resources
 				pros::delay(20);
-			}
-		});
+			} });
 	}
-	else{
+	else
+	{
 		chooser(auton_status);
-		// if (auton_status < 0) sort(REDCOLOR);
-		// else sort(BLUECOLOR);
-		pros::lcd::set_text(1, "auton chosen");
+		// if (auton_status < 0)
+		// 	sort(REDCOLOR);
+		// else
+		// 	sort(BLUECOLOR);
+		pros::lcd::set_text(1, "AUTON CHOSEN, GOOD LUCK!");
+		pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ".--.");
 	}
-
 }
 
 /**
@@ -67,7 +73,8 @@ void initialize() {
  * the VEX Competition Switch, following either autonomous or opcontrol. When
  * the robot is enabled, this task will exit.
  */
-void disabled() {
+void disabled()
+{
 	// if(!testing){
 	// 	chooser(auton_status);
 	// 	pros::lcd::set_text(1, "auton chosen");
@@ -96,10 +103,19 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {
-	init_intake();
-	if(testing) run_auton(test_auton);
-	else run_auton(auton_status);
+void autonomous()
+{
+	if (testing)
+	{
+		run_auton(test_auton);
+		// pros::delay(5000);
+		// if (test_auton > 0)
+		// 	reset_position(146);
+		// else
+		// 	reset_position(-146);
+	}
+	else
+		run_auton(auton_status);
 }
 
 bool intake_on = true;
@@ -116,32 +132,33 @@ bool intake_on = true;
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
-void opcontrol() {
+void opcontrol()
+{
 	// intake_task->remove();
-	
+
 	arm.set_brake_mode_all(pros::motor_brake_mode_e::E_MOTOR_BRAKE_HOLD);
 	left.set_brake_mode_all(pros::motor_brake_mode_e::E_MOTOR_BRAKE_BRAKE);
-    right.set_brake_mode_all(pros::motor_brake_mode_e::E_MOTOR_BRAKE_BRAKE);
-	
+	right.set_brake_mode_all(pros::motor_brake_mode_e::E_MOTOR_BRAKE_BRAKE);
 
 	bool mogo_flag = false;
 	bool mogo_pressed = true;
 	bool swiper_flag = false;
 	bool swiper_pressed = true;
-
+	bool uppressed = true;
 	bool b_pressed = true;
 	bool y_pressed = true;
 
 	bool arm_pressed = true;
 
-	if (intake_task != nullptr) {
-		intake_task->notify();
-	}
+	// if (intake_task != nullptr) {
+	// 	intake_task->notify();
+	// }
 	// init_driver_intake();
-		#pragma region arcade
-		// Arcade control scheme
-		
-		pros::Task drive_task([&]() {
+#pragma region arcade
+	// Arcade control scheme
+
+	pros::Task drive_task([&]()
+						  {
 			while (true) {
 				int dir = master.get_analog(ANALOG_LEFT_Y);    // Gets amount forward/backward from left joystick
 				int turn = master.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
@@ -149,17 +166,21 @@ void opcontrol() {
 				right.move(dir-turn);
 				// delay to save resources
 				pros::delay(20);
-			}
-		});
-		#pragma endregion arcade
+			} });
+#pragma endregion arcade
 
-	while (true) {
-		if(master.get_digital(DIGITAL_L1)){
-			if(!arm_pressed){
-				intake.move(-60);
+	while (true)
+	{
+		if (master.get_digital(DIGITAL_L1))
+		{
+			if (!arm_pressed)
+			{
+				// intake.move(-60);
+				set_intake_speed(-50);
 				arm.move(127);
 				pros::delay(100);
-				intake.move(0);
+				// intake.move(0);
+				set_intake_speed(0);
 				arm_pressed = true;
 			}
 			// arm_mutex.lock();
@@ -167,136 +188,265 @@ void opcontrol() {
 			// arm_mutex.unlock();
 			arm.move(127);
 			// target_mutex.lock();
-			global_target=0;
+			global_target = 0;
 			// global_target=5000;
 			// target_mutex.unlock();
 		}
-		else if(master.get_digital(DIGITAL_L2)){
+		else if (master.get_digital(DIGITAL_L2))
+		{
 			// arm_mutex.lock();
 			arm_move = true;
 			// arm_mutex.unlock();
 			arm.move(-127);
 			// target_mutex.lock();
-			global_target=0;
+			global_target = 0;
 			// global_target=5000;
 			// target_mutex.unlock();
 		}
-		else if(master.get_digital(DIGITAL_L1) != 1 && arm_pressed){
+		else if (master.get_digital(DIGITAL_L1) != 1 && arm_pressed)
+		{
 			arm_pressed = false;
 		}
-		else{
+		else if (master.get_digital(DIGITAL_DOWN))
+		{
+			arm_move = false;
+			global_target = 20000;
+		}
+		else
+		{
 			// arm_mutex.lock();
-			if(arm_move){
+			if (arm_move)
+			{
 				arm.brake();
-				global_target=0;
+				global_target = 0;
 			}
 			// arm_mutex.unlock();
 		}
 
-		#pragma region intake r1
-		if(master.get_digital(DIGITAL_R1) && intake_on){
-			intake.move(127);
-			// set_intake_speed(127);
+#pragma region intake r1
+		if (master.get_digital(DIGITAL_R1) && intake_on)
+		{
+			// intake.move(127);
+			intakemutex.lock();
+			set_intake_speed(127, false);
+			intakemutex.unlock();
 		}
-		else if(master.get_digital(DIGITAL_R2) && intake_on){
-			intake.move(-127);
-			// set_intake_speed(-127);
+		else if (master.get_digital(DIGITAL_R2) && intake_on)
+		{
+			// intake.move(-127);
+			intakemutex.lock();
+			set_intake_speed(-127, false);
+			intakemutex.unlock();
 		}
-		else if(intake_on){
-			intake.move(0);
-			// set_intake_speed(0);
+		else if (intake_on)
+		{
+			// intake.move(0);
+			intakemutex.lock();
+			set_intake_speed(0, false);
+			intakemutex.unlock();
 		}
-		#pragma endregion intake
+#pragma endregion intake
 
+#pragma region SWIPER
 
-		#pragma region mogo x
-		
+		// Swiper control//
+		if (master.get_digital(DIGITAL_X) && swiperstate == false)
+		{
+			swiper.set_value(true);
+			swiperon = true;
+		}
+		else if (master.get_digital(DIGITAL_X) != 1 && swiperon == true)
+		{
+			swiperstate = true;
+			swiperon = false;
+		}
+		if (master.get_digital(DIGITAL_X) && swiperstate == true)
+		{
+			swiper.set_value(false);
+			swiperoff = true;
+		}
+		else if (master.get_digital(DIGITAL_X) != 1 && swiperoff == true)
+		{
+			swiperstate = false;
+			swiperoff = false;
+		}
+#pragma endregion SWIPER
 
-		if(master.get_digital(DIGITAL_A) && !mogo_pressed){
+#pragma region mogo x
+
+		if (master.get_digital(DIGITAL_A) && !mogo_pressed)
+		{
 			mogo_flag = !mogo_flag;
 			mogo.set_value(mogo_flag);
 			mogo_pressed = true;
 			pros::delay(1000);
 		}
-		else if(master.get_digital(DIGITAL_A) != 1 && mogo_pressed){
+		else if (master.get_digital(DIGITAL_A) != 1 && mogo_pressed)
+		{
 			mogo_pressed = false;
 		}
-		else if(mogo_seated() && mogo_flag == false){
+		else if (mogo_seated() && mogo_flag == false)
+		{
 			mogo_flag = !mogo_flag;
 			pros::delay(50);
 			mogo.set_value(mogo_flag);
 		}
-		
-		#pragma endregion mogo
 
-		if(master.get_digital(DIGITAL_B) && !b_pressed){
+#pragma endregion mogo
+
+		if (master.get_digital(DIGITAL_B) && !b_pressed)
+		{
 			// swiper_flag = !swiper_flag;
 			b_pressed = true;
 			// arm_mutex.lock();
-			arm_move=false;
+			arm_move = false;
 			// arm_mutex.unlock();
-			
-		
+			int a = 0;
 			// target_mutex.lock();
-			global_target=2800;
+			global_target = 3000;
+
 			// global_target=5000;
 			// target_mutex.unlock();
 			pros::Task drive_task2([&]()
-			{
+								   {
+									int count=0;
+									while(fabs(arm_control.get_position()-3000)>1000){
+					if( master.get_digital(DIGITAL_R1)||master.get_digital(DIGITAL_R2)||master.get_digital(DIGITAL_Y) || master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2)) return;
+					pros::delay(10);
+									}
+									intake_on = false;
+									intakemutex.lock();
+									set_intake_speed(127,false);
 				while(top_distance.get_distance()>50) {
-					if( master.get_digital(DIGITAL_Y) || master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2))
+					if( master.get_digital(DIGITAL_R1)||master.get_digital(DIGITAL_R2)||master.get_digital(DIGITAL_Y) || master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2))
 						// return;
 						goto jmp;
 					pros::delay(10);
 				}
-				arm.set_brake_mode_all(MOTOR_BRAKE_BRAKE);
-				pros::delay(1000);
+				// arm.set_brake_mode_all(MOTOR_BRAKE_BRAKE);
+				while(count<=50){
+					count++;
+					if( master.get_digital(DIGITAL_R1)||master.get_digital(DIGITAL_R2)||master.get_digital(DIGITAL_Y) || master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2))
+						// return;
+						goto jmp;
+					pros::delay(10);
+				}
+				// pros::delay(700);
+				arm_move=false;
+				arm.move(127);
+				set_intake_speed(-15);
+				pros::delay(100);
 				// target_mutex.lock();
-				global_target=6000;
+				global_target=9500;
 				// target_mutex.unlock();
-				intake_on = false;
-				intake.move(-50);
-				pros::delay(500);
+				// intake.move(-50);
+				count=0;
+				while(count<=60){
+					count++;
+					if( master.get_digital(DIGITAL_R1)||master.get_digital(DIGITAL_R2)||master.get_digital(DIGITAL_Y) || master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2))
+						// return;
+						goto jmp;
+					pros::delay(10);
+				}
+				set_intake_speed(127);
+				while(top_distance.get_distance()>50) {
+					if( master.get_digital(DIGITAL_R1)||master.get_digital(DIGITAL_R2)||master.get_digital(DIGITAL_Y) || master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2))
+						// return;
+						goto jmp;
+					pros::delay(10);
+				}
+				set_intake_speed(-50);
+				pros::delay(70);
+				set_intake_speed(0);
+				// arm.set_brake_mode_all(MOTOR_BRAKE_HOLD);
+				jmp: 
 				intake_on = true;
-				arm.set_brake_mode_all(MOTOR_BRAKE_HOLD);
-				jmp:
-			});
-			
+				arm_move=true; 
+				intakemutex.unlock(); });
 		}
 
-		
-
-		else if(master.get_digital(DIGITAL_B) != 1 && b_pressed){
+		else if (master.get_digital(DIGITAL_B) != 1 && b_pressed)
+		{
 			b_pressed = false;
 		}
 
-		if(master.get_digital(DIGITAL_Y) && !y_pressed){
+		if (master.get_digital(DIGITAL_Y) && !y_pressed)
+		{
 			// hang_flag = !hang_flag;
 			y_pressed = true;
 			// arm_mutex.lock();
-			arm_move=false;
+			arm_move = false;
 			// arm_mutex.unlock();
-			
 
 			// target_mutex.lock();
-			global_target=100;
+			global_target = 100;
 			// target_mutex.unlock();
 		}
-		else if(master.get_digital(DIGITAL_Y) != 1 && y_pressed){
+		else if (master.get_digital(DIGITAL_Y) != 1 && y_pressed)
+		{
 			y_pressed = false;
 		}
 
-		if(master.get_digital(DIGITAL_UP)){
-			chassis.moveDistance(8,1000,{.forwards=false},false);
-			intake.move(-50);
+		if (master.get_digital(DIGITAL_UP) && !uppressed)
+		{
 			// arm_mutex.lock();
-			arm_move=true;
+			uppressed = true;
+			arm_move = false;
 			// arm_mutex.unlock();
-			arm.move(127);
-			pros::delay(1000);
-			intake.move(127);
-			arm.move(0);
+			// target_mutex.lock();
+			global_target = 19000;
+			// pros::Task up_task([&]()
+			// 				   {
+			// 						int count=0;
+			// 						intake_on = false;
+			// 						intakemutex.lock();
+			// 						global_target = 3000;
+			// 						set_intake_speed(127,false);
+			// 	while(top_distance.get_distance()>50) {
+			// 		if( master.get_digital(DIGITAL_R1)||master.get_digital(DIGITAL_R2)||master.get_digital(DIGITAL_Y) || master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2))
+			// 			// return;
+			// 			goto jm;
+			// 		pros::delay(10);
+			// 	}
+			// 	// arm.set_brake_mode_all(MOTOR_BRAKE_BRAKE);
+			// 	while(count<=50){
+			// 		count++;
+			// 		if( master.get_digital(DIGITAL_R1)||master.get_digital(DIGITAL_R2)||master.get_digital(DIGITAL_Y) || master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2))
+			// 			// return;
+			// 			goto jm;
+			// 		pros::delay(10);
+			// 	}
+			// 	// pros::delay(700);
+			// 	// arm_move=false;
+			// 	// arm.move(127);
+			// 	global_target = 18700;
+			// 	set_intake_speed(-15);
+			// 	pros::delay(200);
+			// 	// target_mutex.lock();
+			// 	// target_mutex.lock();
+			// 	// target_mutex.unlock();
+			// 	// intake.move(-50);
+			// 	// arm.set_brake_mode_all(MOTOR_BRAKE_HOLD);
+			// 	jm:
+			// 	intake_on = true;
+			// 	arm_move=true;
+			// 	intakemutex.unlock(); });
+			// chassis.moveDistance(8, 1000, {.forwards = false}, false);
+			// // intake.move(-50);
+			// set_intake_speed(-50);
+			// // arm_mutex.lock();
+			// arm_move = true;
+			// // arm_mutex.unlock();
+			// arm.move(127);
+			// pros::delay(1000);
+			// // intake.move(127);
+			// set_intake_speed(0);
+			// arm.move(0);
 		}
-		pros::delay(20);                               // Run for 20 ms then update
+		else if (master.get_digital(DIGITAL_UP) != 1 && uppressed)
+		{
+			uppressed = false;
+		}
+		pros::delay(20); // Run for 20 ms then update
 	}
 }
