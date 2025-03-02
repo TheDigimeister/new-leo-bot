@@ -14,5 +14,6 @@ void redpos_finals_nograb3rdmogo();
 void redpos_teamwork_grab3rdmogo();
 void redpos_teamwork_nograb3rdmogo();
 void skills();
+void test();
 void reset_position(int angle);
 #endif

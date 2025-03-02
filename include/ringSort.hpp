@@ -19,7 +19,7 @@ extern pros::Mutex arm_mutex;
 extern pros::Mutex target_mutex;
 extern int global_target;
 extern bool arm_move;
-
+extern bool enablesort;
 void arm_to_pos();
 
 #endif

@@ -11,10 +11,10 @@ void blueneg_teamwork()
     mogo.set_value(false);
 
     // score ring
-    chassis.moveDistance(6.5, 1000);
-    arm.move(80);
-    pros::delay(800);
-    arm.brake();
+    // chassis.moveDistance(6.5, 1000);
+    // arm.move(80);
+    // pros::delay(800);
+    // arm.brake();
 
     // get mogo
     chassis.moveToPoint(17, 33, 4000, {.forwards = false, .maxSpeed = 80});
@@ -41,26 +41,41 @@ void blueneg_teamwork()
     set_intake_speed(127, false);
     chassis.turnToPoint(52, -10, 1000);
     chassis.moveToPoint(52, -10, 1000);
-    chassis.moveDistance(40, 700, {.minSpeed = 80});
+    chassis.moveDistance(40, 700, {.minSpeed = 50});
     chassis.moveDistance(20, 1000, {.forwards = false, .maxSpeed = 60, .minSpeed = 32, .earlyExitRange = 3}, false);
     chassis.moveDistance(12, 1000);
     chassis.moveDistance(7, 1000, {.forwards = false, .maxSpeed = 60, .minSpeed = 5, .earlyExitRange = 3}, false);
 
-    // touch bar
+    // // touch bar
+    // set_intake_speed(0);
+    // chassis.turnToPoint(-10, 13, 1000, {.minSpeed = 5, .earlyExitRange = 3});
+    // chassis.moveToPoint(-10, 13, 2000, {.minSpeed = 5, .earlyExitRange = 3});
+    // set_intake_speed(127);
+    // pros::Task skills_task2{[=]
+    //                         {
+    //                             while (top_distance.get_distance() > 50)
+    //                                 pros::delay(10);
+    //                             pros::delay(500);
+    //                             set_intake_speed(0);
+    //                         }};
+    // // touch bar
+    // chassis.turnToHeading(17, 500, {.maxSpeed = 60});
+    // chassis.moveDistance(8, 1000);
+
+    // For finals go to positive corner 2/17/25
     set_intake_speed(0);
     chassis.turnToPoint(-10, 13, 1000, {.minSpeed = 5, .earlyExitRange = 3});
-    chassis.moveToPoint(-10, 13, 2000, {.minSpeed = 5, .earlyExitRange = 3});
+    chassis.moveToPoint(-10, 13, 2000, {.minSpeed = 80, .earlyExitRange = 3});
     set_intake_speed(127);
-    pros::Task skills_task2{[=]
-                            {
-                                while (top_distance.get_distance() > 50)
-                                    pros::delay(10);
-                                pros::delay(500);
-                                set_intake_speed(0);
-                            }};
-    // touch bar
-    chassis.turnToHeading(17, 500, {.maxSpeed = 60});
-    chassis.moveDistance(8, 1000);
+    chassis.moveToPoint(-72, -6, 2000, {.minSpeed = 40, .earlyExitRange = 3});
+    swiper.set_value(true);
+    pros::delay(800);
+    set_intake_speed(0);
+    chassis.turnToHeading(50, 3000, {.direction = lemlib::AngularDirection::CCW_COUNTERCLOCKWISE, .minSpeed = 100}, false);
+    swiper.set_value(false);
+    mogo.set_value(false);
+    chassis.turnToPoint(-42.5, 18, 1000, {.minSpeed = 5, .earlyExitRange = 3});
+    chassis.moveToPoint(-42.5, 18, 2000, {.minSpeed = 30, .earlyExitRange = 3});
 }
 
 // void blue2(){

@@ -281,6 +281,24 @@ void chooser(int &status)
                 continue;
             }
         }
+        else if (status == 8)
+        {
+            if (!set_text)
+            {
+                pros::lcd::set_text(1, "    TEST   ");
+                set_text = true;
+            }
+            if (selected != 0)
+            {
+                set_text = false;
+                if (selected == 100)
+                    return;
+                else
+                    status += selected;
+                pros::delay(500);
+                continue;
+            }
+        }
         else
             status = 0;
 
@@ -331,6 +349,9 @@ void run_auton(int selected)
         break;
     case 7:
         skills();
+        break;
+    case 8:
+        test();
         break;
     default:
         break;

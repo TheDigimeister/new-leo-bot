@@ -84,7 +84,7 @@ void redpos_finals_grab3rdmogo()
     // chassis.swingToHeading(135,lemlib::DriveSide::LEFT,1000,{.minSpeed=20,.earlyExitRange=10});
     chassis.turnToHeading(135, 1000);
     set_intake_speed(127, false);
-    chassis.moveDistance(40, 1000, {.minSpeed = 80});
+    chassis.moveDistance(40, 1000, {.minSpeed = 50});
     chassis.moveDistance(20, 1000, {.forwards = false, .maxSpeed = 60, .minSpeed = 32, .earlyExitRange = 3}, false);
     // intake_lift.set_value(true);
     // chassis.moveDistance(8,1000,{.maxSpeed = 60});

@@ -4,7 +4,7 @@ pros::Task *sort_task = nullptr;
 pros::Mutex intake_control;
 int sorting = 0;
 int intake_speed = 0;
-
+bool enablesort = true;
 pros::vision_signature_s_t RED_SIG =
     pros::Vision::signature_from_utility(1, 11049, 12603, 11826, -1625, -703, -1164, 5, 0);
 
@@ -58,35 +58,29 @@ void sort(int color_type)
                                    // printf("%f\n",ring_color.get_rgb().red-ring_color.get_rgb().blue);
                                    // if(ring_color.get_rgb().red-ring_color.get_rgb().blue > 100 ) color = true;
                                    if (color_type == 1)
-                                     if (ring_color.get_hue() > 335 || ring_color.get_hue() < 350)
-                                       color = true;
+                                     if (ring_color.get_hue() > 345 && ring_color.get_hue() < 355)
+                                       if (enablesort)
+                                         color = true;
                                    if (color_type == 2)
-                                     if (ring_color.get_hue() > 200 && ring_color.get_hue() < 230)
-                                       color = true;
-                                   if (top_distance.get_distance() < 30 && color)
+                                     if (ring_color.get_hue() > 180 && ring_color.get_hue() < 235)
+                                       if (enablesort)
+                                         color = true;
+                                   if (top_distance.get_distance() < 50 && color)
                                    {
-                                     intakemutex.lock();
-                                     int prev_intake_speed = intake_speed;
-                                     // pros::delay(10);
-                                     set_intake_speed(60);
-                                     double start = intakerotation.get_position();
-                                     arm_move = false;
-                                     global_target = 2500;
-                                     while (abs(intakerotation.get_position() - abs(start)) <= 60000)
-                                       pros::delay(3);
-                                     global_target = 100;
-                                     intakemutex.unlock();
-                                     //  sorting = 1;
-                                     //  //  pros::delay(5);
-                                     //  sorting = 2;
-                                     //  // intake.brake();
+                                     //  pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ".");
                                      //  pros::delay(500);
-                                     //  sorting = 0;
-                                     //  pros::delay(100);
+                                     double start = intakerotation.get_position();
+                                     while (abs(intakerotation.get_position() - start) <= 25000)
+                                       pros::delay(3);
+                                     sorting = 1;
+                                     //  pros::delay(5);
+
+                                     // intake.brake();
+                                     pros::delay(500);
+                                     sorting = 0;
                                      color = false;
-                                     // set_intake_speed(prev_intake_speed);
                                    }
-                                   pros::delay(5);
+                                   pros::delay(2);
                                  }
                                }};
   }
@@ -133,7 +127,7 @@ void turntomogo()
 }
 bool mogo_seated()
 {
-  return mogo_distance.get_distance() < 25;
+  return mogo_distance.get_distance() < 5;
 }
 
 pros::Mutex intake_mutex;

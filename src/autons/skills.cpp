@@ -119,8 +119,8 @@ void skills()
     chassis.moveDistance(9, 1000, {.minSpeed = 5, .earlyExitRange = 3});
 
     // get new mogo 2
-    chassis.turnToPoint(33, 16, 1000, {.forwards = false});
-    chassis.moveToPoint(33, 16, 4000, {.forwards = false, .minSpeed = 5, .earlyExitRange = 40});
+    chassis.turnToPoint(33, 18, 1000, {.forwards = false});
+    chassis.moveToPoint(33, 18, 4000, {.forwards = false, .minSpeed = 5, .earlyExitRange = 40});
     pros::Task getridofring{[=]
                             {
                                 arm_move = true;
@@ -129,9 +129,10 @@ void skills()
                                 arm.move(-127);
                                 pros::delay(700);
                                 arm.move(0);
+                                arm_move = false;
                                 global_target = 50;
                             }};
-    chassis.moveToPoint(33, 16, 3000, {.forwards = false, .maxSpeed = 70});
+    chassis.moveToPoint(33, 18, 3000, {.forwards = false, .maxSpeed = 70});
     while (!mogo_seated() && chassis.isInMotion())
         pros::delay(10);
     pros::delay(200);
@@ -248,8 +249,8 @@ void skills()
     while (arm_control.get_position() < 3600)
         pros::delay(10);
     // mogo 3 intake 2nd ring
-    chassis.turnToHeading(-27, 1000);
-    chassis.moveDistance(7, 1000);
+    chassis.turnToHeading(-25, 1000);
+    chassis.moveDistance(8.7, 1000);
     set_intake_speed(127);
     pros::Task skills_task3{[=]
                             {
@@ -304,6 +305,12 @@ void skills()
     global_target = 6001;
     // target_mutex.unlock();
 
+    chassis.turnToHeading(-92, 1000, {.minSpeed = 20});
+    chassis.moveDistance(50, 3000, {.minSpeed = 80});
+    getring();
+    chassis.turnToHeading(88, 1000, {.minSpeed = 20});
+    chassis.moveDistance(50, 3000, {.minSpeed = 80});
+    set_intake_speed(127);
     // chassis.moveDistance(14,1000,{.minSpeed=60,.earlyExitRange=3});
     // chassis.moveDistance(22,1000,{.forwards=false,.minSpeed=5,.earlyExitRange=3});
 
