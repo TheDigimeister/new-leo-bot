@@ -47,6 +47,7 @@ void initialize()
 	mogo.set_value(false);
 	init_intake();
 	setup();
+	sort(BLUECOLOR);
 	// sort_thrower.set_value(true);
 	intakerotation.set_position(0);
 	set_intake_speed(0);
@@ -65,8 +66,9 @@ void initialize()
 				pros::lcd::print(3, "Theta: %f", chassis.getPose().theta); // heading
 				pros::lcd::print(4, "angle: %d", arm_control.get_position()); // heading
 				pros::lcd::print(5, "intake: %d",intakerotation.get_position()); 
+				pros::lcd::print(6, "Distance: %d",top_distance.get_distance()); 
 				// delay to save resources
-				pros::delay(20);
+				pros::delay(30);
 			} });
 	}
 	else

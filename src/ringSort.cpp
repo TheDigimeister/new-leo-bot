@@ -6,10 +6,9 @@ int sorting = 0;
 int intake_speed = 0;
 bool enablesort = true;
 pros::vision_signature_s_t RED_SIG =
-    pros::Vision::signature_from_utility(1, 11049, 12603, 11826, -1625, -703, -1164, 5, 0);
-
+    pros::Vision::signature_from_utility(1, 6961, 9917, 8439, -373, 1017, 322, 2.5, 0);
 pros::vision_signature_s_t BLUE_SIG =
-    pros::Vision::signature_from_utility(2, -3785, -3395, -3590, 5827, 7261, 6544, 6.000, 0);
+    pros::Vision::signature_from_utility(2, -5147, -4449, -4798, 6633, 11837, 9235, 2.5, 0);
 pros::vision_signature_s_t MOGO_SIG =
     pros::Vision::signature_from_utility(3, -2897, -2351, -2624, -7927, -7259, -7593, 2.5, 0);
 void setup()
@@ -46,37 +45,40 @@ void sort(int color_type)
   {
     sort_task = new pros::Task{[=]
                                {
-                                 ring_color.set_integration_time(3);
-                                 ring_color.set_led_pwm(100);
+                                 //  ring_color.set_integration_time(3);
+                                 //  ring_color.set_led_pwm(100);
                                  intake.set_brake_mode_all(MOTOR_BRAKE_HOLD);
 
                                  bool color = false;
-
+                                 int check = 0;
                                  while (true)
                                  {
-                                   // printf("R:%f G:%f B:%f\ distance:%d \n",ring_color.get_rgb().red,ring_color.get_rgb().green,ring_color.get_rgb().blue,ring_color.get_proximity());
-                                   // printf("%f\n",ring_color.get_rgb().red-ring_color.get_rgb().blue);
-                                   // if(ring_color.get_rgb().red-ring_color.get_rgb().blue > 100 ) color = true;
-                                   if (color_type == 1)
-                                     if (ring_color.get_hue() > 345 && ring_color.get_hue() < 355)
-                                       if (enablesort)
-                                         color = true;
-                                   if (color_type == 2)
-                                     if (ring_color.get_hue() > 180 && ring_color.get_hue() < 235)
-                                       if (enablesort)
-                                         color = true;
-                                   if (top_distance.get_distance() < 50 && color)
+                                   if (color == false)
                                    {
-                                     //  pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ".");
-                                     //  pros::delay(500);
+                                     pros::vision_object_s_t rtn = vision.get_by_sig(0, color_type);
+                                     if (rtn.width > 180 && color == false && rtn.signature == color_type)
+                                     {
+                                       check++;
+                                     }
+                                     pros::vision_object_s_t rtn2 = vision.get_by_sig(0, color_type);
+                                     if (rtn2.width > 180 && color == false && rtn2.signature == color_type)
+                                     {
+                                       check++;
+                                     }
+                                     if (check >= 1)
+                                     {
+                                       color = true;
+                                       sorting = 2;
+                                       check = 0;
+                                     }
+                                   }
+                                   if (top_distance.get_distance() < 70 && color)
+                                   {
                                      double start = intakerotation.get_position();
-                                     while (abs(intakerotation.get_position() - start) <= 25000)
+                                     while (abs(intakerotation.get_position() - start) <= 1700)
                                        pros::delay(3);
                                      sorting = 1;
-                                     //  pros::delay(5);
-
-                                     // intake.brake();
-                                     pros::delay(500);
+                                     pros::delay(250);
                                      sorting = 0;
                                      color = false;
                                    }
@@ -127,7 +129,10 @@ void turntomogo()
 }
 bool mogo_seated()
 {
-  return mogo_distance.get_distance() < 5;
+  if (mogo_distance.get_distance() < 10)
+    return true;
+  else if (mogo_distance.get_distance() > 40)
+    return false;
 }
 
 pros::Mutex intake_mutex;
@@ -150,10 +155,10 @@ void init_intake()
                                        intake.move(speed);
                                      else if (sorting == 1)
                                      {
-                                       intake.move(0);
+                                       intake.move(-100);
                                      }
                                      else if (sorting == 2)
-                                       intake.move(-100);
+                                       intake.move(100);
                                      if (speed != prev_speed)
                                        pros::delay(100);
                                      prev_speed = speed;
