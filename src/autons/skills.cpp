@@ -15,6 +15,7 @@ void skills()
 
     // get mogo 1
     chassis.moveDistance(20, 1000, {.forwards = false, .maxSpeed = 80});
+    arm.move(-50);
     while (!mogo_seated() && chassis.isInMotion())
         pros::delay(10);
     pros::delay(50);
@@ -45,7 +46,7 @@ void skills()
     arm_move = false;
     // arm_mutex.unlock();
     // target_mutex.lock();
-    global_target = 3000;
+    global_target = 2600;
     // target_mutex.unlock();
     // mogo 1 get ring 2 move to ring
     set_intake_speed(127, false);
@@ -54,21 +55,27 @@ void skills()
     // mogo 1 task that when the ring is on the arm lift the arm up out of the way of other intaked rings
     pros::Task skills_task1{[=]
                             {
+                                int count = 0;
                                 while (top_distance.get_distance() > 50)
+                                {
                                     pros::delay(10);
-                                pros::delay(1000);
+                                }
+                                pros::delay(300);
+                                set_intake_speed(0, false);
+                                arm_move = true;
+                                pros::delay(150);
+                                arm.move(127);
+                                pros::delay(160);
+                                arm_move = true;
                                 // target_mutex.lock();
-                                global_target = 6000;
-                                // target_mutex.unlock();
-                                set_intake_speed(-40);
-                                pros::delay(500);
-                                set_intake_speed(127);
+                                global_target = 7000;
                             }};
 
     // mogo 1 move to stake
     chassis.moveToPoint(-50, 65, 2000, {.forwards = false}, false);
     chassis.turnToHeading(-88.6, 1000);
     chassis.moveDistance(50, 2000, {.maxSpeed = 60});
+    set_intake_speed(127);
     chassis.waitUntil(15);
     // target_mutex.lock();
     global_target = 19000;
@@ -109,7 +116,7 @@ void skills()
     chassis.moveToPoint(-62, 23, 2000, {.minSpeed = 10}, false);
     chassis.turnToHeading(7, 1000);
     // mogo 1 score mogo
-    chassis.moveDistance(19, 1000, {.forwards = false}, false);
+    chassis.moveDistance(16, 1000, {.forwards = false}, false);
     set_intake_speed(-127);
     mogo.set_value(false);
     global_target = 50;
@@ -119,8 +126,8 @@ void skills()
     chassis.moveDistance(9, 1000, {.minSpeed = 5, .earlyExitRange = 3});
 
     // get new mogo 2
-    chassis.turnToPoint(33, 18, 1000, {.forwards = false});
-    chassis.moveToPoint(33, 18, 4000, {.forwards = false, .minSpeed = 5, .earlyExitRange = 40});
+    chassis.turnToPoint(33, 20, 1000, {.forwards = false});
+    chassis.moveToPoint(33, 20, 4000, {.forwards = false, .minSpeed = 5, .earlyExitRange = 40});
     pros::Task getridofring{[=]
                             {
                                 arm_move = true;
@@ -132,7 +139,7 @@ void skills()
                                 arm_move = false;
                                 global_target = 50;
                             }};
-    chassis.moveToPoint(33, 18, 3000, {.forwards = false, .maxSpeed = 70});
+    chassis.moveToPoint(33, 15, 3000, {.forwards = false, .maxSpeed = 70});
     while (!mogo_seated() && chassis.isInMotion())
         pros::delay(10);
     pros::delay(200);
@@ -140,19 +147,19 @@ void skills()
     chassis.cancelMotion();
 
     // mogo 2 get 1st ring
-    chassis.turnToPoint(24.5, 40, 1000, {.minSpeed = 5, .earlyExitRange = 3}, false);
+    chassis.turnToPoint(27, 40, 1000, {.minSpeed = 5, .earlyExitRange = 3}, false);
     set_intake_speed(127);
-    fast_move(24.5, 40, 2000, false);
+    fast_move(27, 40, 2000, false);
 
     // mogo 2 get ring 2 move to half way point to avoid hang post
-    chassis.turnToPoint(35, 64, 1000, {.minSpeed = 5, .earlyExitRange = 3}, false);
-    fast_move(35, 64, 1000, true);
+    chassis.turnToPoint(45, 64, 1000, {.minSpeed = 5, .earlyExitRange = 3}, false);
+    fast_move(36, 64, 1000, true);
     // mogo 2 move arm to load ring
     //  arm_mutex.lock();
     arm_move = false;
     // arm_mutex.unlock();
     // target_mutex.lock();
-    global_target = 3000;
+    global_target = 2600;
     // target_mutex.unlock();
     // mogo 2 get ring 2 move to ring
     set_intake_speed(127, false);
@@ -161,21 +168,27 @@ void skills()
     // mogo 2 task that when the ring is on the arm lift the arm up out of the way of other intaked rings
     pros::Task skills_task2{[=]
                             {
+                                int count = 0;
                                 while (top_distance.get_distance() > 50)
+                                {
                                     pros::delay(10);
-                                pros::delay(1000);
+                                }
+                                pros::delay(300);
+                                set_intake_speed(0, false);
+                                arm_move = true;
+                                pros::delay(150);
+                                arm.move(127);
+                                pros::delay(160);
                                 // target_mutex.lock();
-                                global_target = 6000;
-                                // target_mutex.unlock();
-                                set_intake_speed(-40);
-                                pros::delay(500);
-                                set_intake_speed(127);
+                                arm_move = false;
+                                global_target = 7000;
                             }};
 
     // mogo 2 move to stake
     chassis.moveToPoint(43, 72, 2000, {.forwards = false}, false);
     chassis.turnToHeading(91.3, 1000);
     chassis.moveDistance(60, 2000, {.maxSpeed = 60});
+    set_intake_speed(127);
     chassis.waitUntil(14);
     // target_mutex.lock();
     global_target = 19000;
@@ -211,8 +224,8 @@ void skills()
     // chassis.moveToPose(62, 25, -15, 3000, {.lead = .5}, false);
     chassis.moveToPoint(62, 25, 3000, {.minSpeed = 10}, false);
     // mogo 2 score mogo
-    chassis.turnToHeading(-20, 1000);
-    chassis.moveDistance(15, 1000, {.forwards = false}, false);
+    chassis.turnToHeading(-14, 1000);
+    chassis.moveDistance(18, 1000, {.forwards = false}, false);
     set_intake_speed(-127);
     mogo.set_value(false);
     global_target = 50;
@@ -235,15 +248,15 @@ void skills()
     chassis.moveToPoint(-33, 93.5, 2000, {.minSpeed = 50, .earlyExitRange = 2});
     // put ring in arm
     //  target_mutex.lock();
-    global_target = 3000;
+    global_target = 2600;
     pros::delay(200);
     // target_mutex.unlock();
     set_intake_speed(127, false);
     while (top_distance.get_distance() > 50)
         pros::delay(10);
-    pros::delay(1000);
+    pros::delay(200);
     // target_mutex.lock();
-    global_target = 19000;
+    global_target = 15000;
     // target_mutex.unlock();
     set_intake_speed(-60);
     while (arm_control.get_position() < 3600)
@@ -280,61 +293,41 @@ void skills()
     // chassis.moveDistance(10, 1000);
     // mogo 3 face alliance stake
     chassis.moveDistance(5, 1000);
-    chassis.turnToHeading(-1, 1000, {}, false);
+    chassis.turnToHeading(358.5, 2000, {}, false);
     set_intake_speed(127);
     // mogo 3 score on alliance stake
     chassis.moveDistance(50, 1000, {.maxSpeed = 70});
     chassis.moveDistance(7.5, 1000, {.forwards = false});
     chassis.waitUntil(4);
+    arm_move = true;
+    arm.move(127);
     set_intake_speed(-50);
-    // arm_mutex.lock();
-    // arm_move = true;
-    // arm_mutex.unlock();
-    // pros::delay(350);
-    // arm.move(127);
-    // pros::delay(400);
     set_intake_speed(127);
-    // arm.brake();
 
     // mogo 3 get 2nd ring that dropped in front of alliance stake
     chassis.moveDistance(12, 1000, {.forwards = false, .minSpeed = 60, .earlyExitRange = 3}, false);
-    // arm_mutex.lock();
     arm_move = false;
-    // arm_mutex.unlock();
-    // target_mutex.lock();
     global_target = 6001;
-    // target_mutex.unlock();
-
-    chassis.turnToHeading(-92, 1000, {.minSpeed = 20});
-    chassis.moveDistance(50, 3000, {.minSpeed = 80});
+    // get another ring
+    chassis.turnToPoint(-45, 113, 1000);
+    chassis.moveToPoint(-45, 113, 3000, {.minSpeed = 80});
     getring();
-    chassis.turnToHeading(88, 1000, {.minSpeed = 20});
-    chassis.moveDistance(50, 3000, {.minSpeed = 80});
+    chassis.turnToPoint(2, 107, 1000, {.direction = AngularDirection::CW_CLOCKWISE});
+    chassis.moveToPoint(2, 107, 3000, {.minSpeed = 80});
     set_intake_speed(127);
-    // chassis.moveDistance(14,1000,{.minSpeed=60,.earlyExitRange=3});
-    // chassis.moveDistance(22,1000,{.forwards=false,.minSpeed=5,.earlyExitRange=3});
-
     // mogo 3 get ring on far side
-    //  chassis.turnToPoint(-42,117,1000,{.minSpeed=3,.earlyExitRange=5});
-    //  fast_move(-42,117,3000,true);
-
     // mogo 3 move to 4th ring
-    chassis.turnToPoint(21.5, 96, 1000, {.minSpeed = 3, .earlyExitRange = 5});
+    chassis.turnToPoint(27, 91, 1000, {.minSpeed = 3, .earlyExitRange = 5});
     // fast_move(8,107,2000,true);
-    fast_move(21.5, 96, 2000, true);
+    fast_move(27, 91, 2000, true);
 
     // mogo 3 get 5th ring
-    chassis.turnToPoint(42, 118, 1000, {.minSpeed = 3, .earlyExitRange = 5});
+    chassis.turnToPoint(42, 127, 1000, {.minSpeed = 3, .earlyExitRange = 5});
     fast_move(42, 118, 2000, true);
     // mogo 3 get 6th ring
     chassis.turnToHeading(0, 1000, {.minSpeed = 5});
     chassis.moveDistance(9, 1000, {.minSpeed = 5, .earlyExitRange = 3});
     pros::delay(150);
-    // chassis.moveDistance(8, 1000, {.forwards = false, .minSpeed = 5, .earlyExitRange = 3});
-    // chassis.turnToHeading(90, 1000, {.minSpeed = 5, .earlyExitRange = 3});
-    // chassis.moveDistance(8, 1000, {.minSpeed = 5, .earlyExitRange = 3});
-    // chassis.turnToHeading(0, 1000, {.minSpeed = 5});
-    // chassis.moveDistance(17, 1000, {.forwards = false, .minSpeed = 30, .earlyExitRange = 3});
     chassis.moveDistance(9, 1000, {.forwards = false, .minSpeed = 5, .earlyExitRange = 3});
     chassis.moveToPoint(56.3, 95, 3000, {.forwards = false});
     chassis.turnToHeading(5.58, 1000);
@@ -352,7 +345,7 @@ void skills()
                                     if (top_distance.get_distance() < 100)
                                     {
                                         set_intake_speed(127);
-                                        pros::delay(1000);
+                                        pros::delay(950);
                                         set_intake_speed(0);
                                         break;
                                     }
@@ -377,21 +370,27 @@ void skills()
     fast_move(-26, 126, 2000, true);
     set_intake_speed(-127);
     chassis.turnToHeading(285, 1000, {.minSpeed = 5, .earlyExitRange = 3});
-    chassis.moveDistance(48, 1500, {.minSpeed = 127}, false);
+    chassis.moveDistance(43, 1500, {.minSpeed = 127}, false);
     set_intake_speed(60);
     chassis.moveDistance(10, 1000, {.forwards = false}, false);
 
     // hang
     chassis.turnToPoint(-26, 91, 1000, {.forwards = false, .minSpeed = 20, .earlyExitRange = 3});
     chassis.moveToPoint(-26, 91, 2000, {.forwards = false, .minSpeed = 5, .earlyExitRange = 3});
+    swiper.set_value(true);
     // target_mutex.lock();
-    global_target = 20000;
+    global_target = 22000;
     // target_mutex.unlock();
     set_intake_speed(0);
     chassis.turnToHeading(313, 1000, {.minSpeed = 20, .earlyExitRange = 3});
-    chassis.moveDistance(60, 1000, {.forwards = false, .maxSpeed = 90, .minSpeed = 65}, false);
+    chassis.moveDistance(50, 1700, {.forwards = false, .maxSpeed = 60}, false);
+    left.move(127);
+    right.move(127);
     arm.move(-127);
-    pros::delay(600);
+    pros::delay(100);
+    left.move(0);
+    right.move(0);
+    pros::delay(500);
     arm.move(0);
     global_target = 0;
     // left.move(127);

@@ -9,7 +9,7 @@ bool swiperstate = false;
 bool swiperon = false;
 bool swiperoff = false;
 int auton_status = 0;
-int test_auton = TEST;
+int test_auton = SKILLS;
 bool mobostate = false;
 bool moboon = false;
 bool mobooff = false;
@@ -27,9 +27,9 @@ void intakeOn(int speed, double duration)
 	pros::Task intakeon_task([=]()
 							 {
 	intakemutex.lock();
-	intake.move(speed);
+	set_intake_speed(speed);
 	pros::delay(duration);
-	intake.move(0); 
+	set_intake_speed(0);
 	intakemutex.unlock(); });
 }
 void initialize()
@@ -37,9 +37,6 @@ void initialize()
 	pros::lcd::initialize();
 	pros::delay(100);
 	// chassis = init_drive();
-	chassis.calibrate();
-	pros::delay(100);
-	chassis.setPose(0, 0, 0);
 	// chassis.setPose(0,0,0);
 	// chassis.setPose(0,0,-12);
 	arm_to_pos();
@@ -47,10 +44,13 @@ void initialize()
 	mogo.set_value(false);
 	init_intake();
 	setup();
-	sort(BLUECOLOR);
+	// sort(BLUECOLOR);
 	// sort_thrower.set_value(true);
 	intakerotation.set_position(0);
 	set_intake_speed(0);
+	chassis.calibrate();
+	pros::delay(100);
+	chassis.setPose(0, 0, 0);
 	if (testing)
 	{
 		// if (test_auton < 0)
@@ -65,8 +65,8 @@ void initialize()
 				pros::lcd::print(2, "Y: %f", chassis.getPose().y); // y
 				pros::lcd::print(3, "Theta: %f", chassis.getPose().theta); // heading
 				pros::lcd::print(4, "angle: %d", arm_control.get_position()); // heading
-				pros::lcd::print(5, "intake: %d",intakerotation.get_position()); 
-				pros::lcd::print(6, "Distance: %d",top_distance.get_distance()); 
+				pros::lcd::print(5, "MogoDistance: %d",mogo_distance.get_distance()); 
+				pros::lcd::print(6, "IntakeDistance: %d",top_distance.get_distance()); 
 				// delay to save resources
 				pros::delay(30);
 			} });
@@ -211,12 +211,8 @@ void opcontrol()
 			// arm_mutex.lock();
 			arm_move = true;
 			// arm_mutex.unlock();
-			if (arm_control.get_position() > 2100)
-				arm.move(-127);
-			else if (2100 >= arm_control.get_position() > 600)
-				arm.move(-40);
-			else
-				arm.move(-10);
+			arm.move(-127);
+
 			// target_mutex.lock();
 			global_target = 0;
 			// global_target=5000;
@@ -312,7 +308,7 @@ void opcontrol()
 		if (master.get_digital(DIGITAL_A) && mobostate == true)
 		{
 			mogo.set_value(false);
-			intakeOn(-127, 100);
+			intakeOn(-127, 70);
 			if (autoclamped == true)
 			{
 				disableautoclamp = true;
@@ -341,28 +337,35 @@ void opcontrol()
 			// arm_mutex.unlock();
 			int a = 0;
 			// target_mutex.lock();
-			global_target = 2400;
+			global_target = 2600;
 
 			// global_target=5000;
 			// target_mutex.unlock();
 			pros::Task drive_task2([&]()
 								   {
 									int count=0;
-									while(fabs(arm_control.get_position()-2400)>1000){
+									global_target = 2600;
+									while(fabs(arm_control.get_position()-2480)>850){
 					if( master.get_digital(DIGITAL_R1)||master.get_digital(DIGITAL_R2)||master.get_digital(DIGITAL_Y) || master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2)) return;
 					pros::delay(10);
 									}
+									global_target = 2600;
 									intake_on = false;
 									intakemutex.lock();
+					// 				set_intake_speed(127);
+					// 				while(top_distance.get_distance()>50) {
+					// 					if( master.get_digital(DIGITAL_R1)||master.get_digital(DIGITAL_R2)||master.get_digital(DIGITAL_Y) || master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2))goto jmp;
+										
+					// pros::delay(10);
+					// 				}
 									set_intake_speed(127,false);
+									
 				while(top_distance.get_distance()>50) {
-					if( master.get_digital(DIGITAL_R1)||master.get_digital(DIGITAL_R2)||master.get_digital(DIGITAL_Y) || master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2))
-						// return;
-						goto jmp;
+					if( master.get_digital(DIGITAL_R1)||master.get_digital(DIGITAL_R2)||master.get_digital(DIGITAL_Y) || master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2))goto jmp;
 					pros::delay(10);
 				}
 				// arm.set_brake_mode_all(MOTOR_BRAKE_BRAKE);
-				while(count<=50){
+				while(count<=40){
 					count++;
 					if( master.get_digital(DIGITAL_R1)||master.get_digital(DIGITAL_R2)||master.get_digital(DIGITAL_Y) || master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2))
 						// return;
@@ -370,32 +373,46 @@ void opcontrol()
 					pros::delay(10);
 				}
 				// pros::delay(700);
-				arm_move=false;
-				arm.move(127);
 				set_intake_speed(-15);
-				pros::delay(100);
-				// target_mutex.lock();
-				global_target=9500;
+				// arm.move(127);
+				// pros::delay(60);
+				// // target_mutex.lock();
+				// global_target=5100;
 				// target_mutex.unlock();
 				// intake.move(-50);
-				count=0;
-				while(count<=60){
-					count++;
-					if( master.get_digital(DIGITAL_R1)||master.get_digital(DIGITAL_R2)||master.get_digital(DIGITAL_Y) || master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2))
-						// return;
-						goto jmp;
+				// count=0;
+				// while(count<=40){
+				// 	count++;
+				// 	if( master.get_digital(DIGITAL_R1)||master.get_digital(DIGITAL_R2)||master.get_digital(DIGITAL_Y) || master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2))
+				// 		// return;
+				// 		goto jmp;
+				// 	pros::delay(10);
+				// }
+				// set_intake_speed(0);
+				pros::delay(150);
+				// set_intake_speed(127,false);
+				// pros::delay(100);
+				// set_intake_speed(0,false);
+				arm_move = true;
+				arm.move(127);
+				pros::delay(160);
+				// target_mutex.lock();
+				arm_move = false;
+				global_target=5100;
+				while(fabs(arm_control.get_position()-5100)>1500){
+					if( master.get_digital(DIGITAL_R1)||master.get_digital(DIGITAL_R2)||master.get_digital(DIGITAL_Y) || master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2)) goto jmp;
 					pros::delay(10);
-				}
-				set_intake_speed(127);
+									}
+				set_intake_speed(127,false);
 				while(top_distance.get_distance()>50) {
 					if( master.get_digital(DIGITAL_R1)||master.get_digital(DIGITAL_R2)||master.get_digital(DIGITAL_Y) || master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2))
 						// return;
 						goto jmp;
-					pros::delay(10);
+					pros::delay(5);
 				}
-				set_intake_speed(-50);
-				pros::delay(70);
-				set_intake_speed(0);
+				set_intake_speed(-80);
+				pros::delay(220);
+				set_intake_speed(0,false);
 				// arm.set_brake_mode_all(MOTOR_BRAKE_HOLD);
 				jmp: 
 				intake_on = true;
@@ -428,15 +445,18 @@ void opcontrol()
 
 		if (master.get_digital(DIGITAL_UP) && !uppressed)
 		{
-
-			pros::Task drive_task2([&]()
-								   {
-									uppressed = true;
+			chassis.moveDistance(7.5, 1000, {.forwards = false});
+			chassis.waitUntil(4);
 			arm_move = true;
 			arm.move(127);
-				while(fabs(arm_control.get_position()-19000)>1000) pros::delay(25);
-				 arm_move = false;
-			global_target = 19000; });
+
+			// pros::Task drive_task2([&]()
+			// 					   {
+			// 						uppressed = true;
+			// arm_move = false;
+			// arm.move(127);
+			// 	while(fabs(arm_control.get_position()-18420)>1000) pros::delay(20);
+			// global_target = 18420; });
 		}
 		else if (master.get_digital(DIGITAL_UP) != 1 && uppressed)
 		{

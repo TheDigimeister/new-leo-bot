@@ -1,5 +1,6 @@
 #ifndef _AUTONCHOOSER_HPP_
 #define _AUTONCHOOSER_HPP_
+#define BLUEPOS_GOLDRUSH -7
 #define BLUEPOS_FINALS_NOGRAB3RDMOGO -6
 #define BLUEPOS_FINALS_GRAB3RDMOGO -5
 #define BLUEPOS_TEAMWORK_NOGRAB3RDMOGO -4
@@ -12,8 +13,9 @@
 #define REDPOS_TEAMWORK_NOGRAB3RDMOGO 4
 #define REDPOS_FINALS_GRAB3RDMOGO 5
 #define REDPOS_FINALS_NOGRAB3RDMOGO 6
-#define SKILLS 7
-#define TEST 8
+#define REDPOS_GOLDRUSH 7
+#define SKILLS 8
+#define TEST 9
 void chooser(int &status);
 
 void run_auton(int selected);

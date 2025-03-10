@@ -56,33 +56,31 @@ void sort(int color_type)
                                    if (color == false)
                                    {
                                      pros::vision_object_s_t rtn = vision.get_by_sig(0, color_type);
-                                     if (rtn.width > 180 && color == false && rtn.signature == color_type)
-                                     {
-                                       check++;
-                                     }
-                                     pros::vision_object_s_t rtn2 = vision.get_by_sig(0, color_type);
-                                     if (rtn2.width > 180 && color == false && rtn2.signature == color_type)
-                                     {
-                                       check++;
-                                     }
-                                     if (check >= 1)
+                                     if (rtn.width > 50 && color == false && rtn.signature == color_type)
                                      {
                                        color = true;
-                                       sorting = 2;
-                                       check = 0;
                                      }
+                                     //  pros::vision_object_s_t rtn2 = vision.get_by_sig(0, color_type);
+                                     //  if (rtn2.width > 180 && color == false && rtn2.signature == color_type)
+                                     //  {
+                                     //    check++;
+                                     //  }
+                                     //  if (check >= 1)
+                                     //  {
+                                     //    color = true;
+                                     //    check = 0;
+                                     //  }
                                    }
-                                   if (top_distance.get_distance() < 70 && color)
+                                   if (color)
                                    {
-                                     double start = intakerotation.get_position();
-                                     while (abs(intakerotation.get_position() - start) <= 1700)
-                                       pros::delay(3);
+                                     sorting = 2;
+                                     pros::delay(380);
                                      sorting = 1;
-                                     pros::delay(250);
+                                     pros::delay(60);
                                      sorting = 0;
                                      color = false;
                                    }
-                                   pros::delay(2);
+                                   pros::delay(5);
                                  }
                                }};
   }
@@ -129,9 +127,9 @@ void turntomogo()
 }
 bool mogo_seated()
 {
-  if (mogo_distance.get_distance() < 10)
+  if (mogo_distance.get_distance() < 40)
     return true;
-  else if (mogo_distance.get_distance() > 40)
+  else if (mogo_distance.get_distance() >= 40)
     return false;
 }
 
@@ -152,13 +150,16 @@ void init_intake()
                                      int speed = intake_speed;
                                      bool antijam_temp = antijam;
                                      if (sorting == 0)
-                                       intake.move(speed);
+                                       if (speed == 0)
+                                         intake.brake();
+                                       else
+                                         intake.move(speed);
                                      else if (sorting == 1)
                                      {
-                                       intake.move(-100);
+                                       intake.move(-15);
                                      }
                                      else if (sorting == 2)
-                                       intake.move(100);
+                                       intake.move(110);
                                      if (speed != prev_speed)
                                        pros::delay(100);
                                      prev_speed = speed;
@@ -170,7 +171,7 @@ void init_intake()
                                      if (count > 10 && antijam_temp)
                                      {
                                        intake.move(-127);
-                                       pros::delay(500);
+                                       pros::delay(400);
                                        intake.move(0);
                                        prev_speed = 0;
                                        count = 0;

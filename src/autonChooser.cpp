@@ -31,7 +31,25 @@ void chooser(int &status)
             break;
         selected = convert_bit(pros::lcd::read_buttons());
         // printf("%d , %d\n",pros::lcd::read_buttons(),status);
-        if (status == -6)
+        if (status == -7)
+        {
+            if (!set_text)
+            {
+                pros::lcd::set_text(1, "BLUE(+)POS GOLDRUSH");
+                set_text = true;
+            }
+            if (selected != 0)
+            {
+                set_text = false;
+                if (selected == 100)
+                    return;
+                else
+                    status += selected;
+                pros::delay(500);
+                continue;
+            }
+        }
+        else if (status == -6)
         {
             if (!set_text)
             {
@@ -267,7 +285,7 @@ void chooser(int &status)
         {
             if (!set_text)
             {
-                pros::lcd::set_text(1, "    SKILLS   ");
+                pros::lcd::set_text(1, "RED(+)POS GOLDRUSH");
                 set_text = true;
             }
             if (selected != 0)
@@ -282,6 +300,24 @@ void chooser(int &status)
             }
         }
         else if (status == 8)
+        {
+            if (!set_text)
+            {
+                pros::lcd::set_text(1, "    SKILLS   ");
+                set_text = true;
+            }
+            if (selected != 0)
+            {
+                set_text = false;
+                if (selected == 100)
+                    return;
+                else
+                    status += selected;
+                pros::delay(500);
+                continue;
+            }
+        }
+        else if (status == 9)
         {
             if (!set_text)
             {
@@ -311,6 +347,9 @@ void run_auton(int selected)
 {
     switch (selected)
     {
+    case -7:
+        bluepos_goldrush();
+        break;
     case -6:
         bluepos_finals_nograb3rdmogo();
         break;
@@ -348,9 +387,12 @@ void run_auton(int selected)
         redpos_finals_nograb3rdmogo();
         break;
     case 7:
-        skills();
+        redpos_goldrush();
         break;
     case 8:
+        skills();
+        break;
+    case 9:
         test();
         break;
     default:
