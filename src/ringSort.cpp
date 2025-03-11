@@ -71,13 +71,20 @@ void sort(int color_type)
                                      //    check = 0;
                                      //  }
                                    }
-                                   if (color)
+                                   if (color && top_distance.get_distance() < 50)
                                    {
+                                     arm_move = false;
+                                     global_target = 2600;
                                      sorting = 2;
-                                     pros::delay(380);
-                                     sorting = 1;
-                                     pros::delay(60);
+                                     pros::delay(100);
+                                     global_target = 2600;
+                                     pros::delay(200);
+                                     global_target = 2600;
+                                     pros::delay(200);
                                      sorting = 0;
+                                     arm_move = true;
+                                     arm.move(127);
+                                     arm_move = false;
                                      color = false;
                                    }
                                    pros::delay(5);
@@ -196,7 +203,7 @@ void set_intake_speed(int speed, bool jam)
 
 void fast_move(float x, float y, int timeout, bool async = true)
 {
-  chassis.moveToPoint(x, y, timeout, {.minSpeed = 5, .earlyExitRange = 10});
+  chassis.moveToPoint(x, y, timeout, {.minSpeed = 30, .earlyExitRange = 10});
   chassis.moveToPoint(x, y, timeout, {.maxSpeed = 30, .minSpeed = 5, .earlyExitRange = 3}, async);
 }
 
