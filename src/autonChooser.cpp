@@ -35,7 +35,7 @@ void chooser(int &status)
         {
             if (!set_text)
             {
-                pros::lcd::set_text(1, "BLUE(+)POS GOLDRUSH");
+                pros::lcd::set_text(1, "BLUE(-)NEG FINALS");
                 set_text = true;
             }
             if (selected != 0)
@@ -285,7 +285,7 @@ void chooser(int &status)
         {
             if (!set_text)
             {
-                pros::lcd::set_text(1, "RED(+)POS GOLDRUSH");
+                pros::lcd::set_text(1, "RED(-)NEG FINALS");
                 set_text = true;
             }
             if (selected != 0)
@@ -348,7 +348,7 @@ void run_auton(int selected)
     switch (selected)
     {
     case -7:
-        bluepos_goldrush();
+        blueneg_finals();
         break;
     case -6:
         bluepos_finals_nograb3rdmogo();
@@ -387,7 +387,7 @@ void run_auton(int selected)
         redpos_finals_nograb3rdmogo();
         break;
     case 7:
-        redpos_goldrush();
+        redneg_finals();
         break;
     case 8:
         skills();

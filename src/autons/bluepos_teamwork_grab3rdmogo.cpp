@@ -81,9 +81,9 @@ void bluepos_teamwork_grab3rdmogo()
     chassis.moveToPoint(-49, -2, 2000, {.minSpeed = 5, .earlyExitRange = 3});
     set_intake_speed(127);
     // chassis.swingToHeading(135,lemlib::DriveSide::LEFT,1000,{.minSpeed=20,.earlyExitRange=10});
-    chassis.turnToHeading(-141, 1000);
+    chassis.turnToHeading(-137, 1000);
     set_intake_speed(127, false);
-    chassis.moveDistance(40, 1000, {.minSpeed = 50});
+    chassis.moveDistance(40, 1000, {.minSpeed = 70});
     chassis.moveDistance(20, 1000, {.forwards = false, .maxSpeed = 60, .minSpeed = 32, .earlyExitRange = 3}, false);
     // intake_lift.set_value(true);
     // chassis.moveDistance(8,1000,{.maxSpeed = 60});
@@ -100,13 +100,13 @@ void bluepos_teamwork_grab3rdmogo()
     // chassis.moveDistance(10, 1000, {.forwards = false}, false);
     // set_intake_speed(-127);
     // pros::delay(200);
-    chassis.turnToPoint(-45.5, 19, 1000, {.minSpeed = 5, .earlyExitRange = 3});
+    chassis.turnToPoint(-44, 19, 1000, {.minSpeed = 5, .earlyExitRange = 3});
     mogo.set_value(false);
-    chassis.moveToPoint(-45.5, 19, 2000, {.minSpeed = 30, .earlyExitRange = 3});
+    chassis.moveToPoint(-44, 19, 2000, {.minSpeed = 30, .earlyExitRange = 3});
     // set_intake_speed(127);
     chassis.waitUntil(10);
     mogo.set_value(false);
-    chassis.turnToHeading(-180, 1000, {}, false);
+    chassis.turnToHeading(-176, 1000, {}, false);
     // turntomogo();
     chassis.moveDistance(9, 1000, {.forwards = false}, false);
     if (mogo_seated())

@@ -4,8 +4,8 @@
 true: display odometry data and will run the test auton
 false: display competition screen to choose different autons
 */
-bool testing = true;
-bool swiperstate = false;
+bool testing = false;
+bool swiperstate = false; //
 bool swiperon = false;
 bool swiperoff = false;
 int auton_status = 0;
@@ -365,7 +365,7 @@ void opcontrol()
 					pros::delay(10);
 				}
 				// arm.set_brake_mode_all(MOTOR_BRAKE_BRAKE);
-				while(count<=40){
+				while(count<=60){
 					count++;
 					if( master.get_digital(DIGITAL_R1)||master.get_digital(DIGITAL_R2)||master.get_digital(DIGITAL_Y) || master.get_digital(DIGITAL_L1) || master.get_digital(DIGITAL_L2))
 						// return;
@@ -410,8 +410,8 @@ void opcontrol()
 						goto jmp;
 					pros::delay(5);
 				}
-				set_intake_speed(-80);
-				pros::delay(220);
+				set_intake_speed(-60);
+				pros::delay(150);
 				set_intake_speed(0,false);
 				// arm.set_brake_mode_all(MOTOR_BRAKE_HOLD);
 				jmp: 

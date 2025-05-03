@@ -32,7 +32,7 @@ void blueneg_teamwork()
     chassis.moveToPoint(34, 41.5, 1000, {.minSpeed = 20, .earlyExitRange = 3});
     chassis.turnToPoint(48, 42.5, 1000, {.minSpeed = 20, .earlyExitRange = 3});
     chassis.moveToPoint(48, 42.5, 1000, {.minSpeed = 20, .earlyExitRange = 3}, false);
-    chassis.moveToPoint(12, 37, 1000, {.forwards = false, .minSpeed = 20, .earlyExitRange = 3});
+    chassis.moveToPoint(15.5, 37, 1000, {.forwards = false, .minSpeed = 20, .earlyExitRange = 3});
     set_intake_speed(80);
     chassis.turnToPoint(30, 29, 1000, {.minSpeed = 50, .earlyExitRange = 3}, false);
     set_intake_speed(127);
@@ -50,8 +50,8 @@ void blueneg_teamwork()
 
     // touch bar
     set_intake_speed(0);
-    chassis.turnToPoint(-10, 13, 1000, {.minSpeed = 5, .earlyExitRange = 3});
-    chassis.moveToPoint(-10, 13, 2000, {.minSpeed = 5, .earlyExitRange = 3});
+    chassis.turnToPoint(-6, 10, 1000, {.minSpeed = 5, .earlyExitRange = 3});
+    chassis.moveToPoint(-6, 10, 2000, {.minSpeed = 5, .earlyExitRange = 3});
     set_intake_speed(127);
     pros::Task skills_task2{[=]
                             {
@@ -70,15 +70,15 @@ void blueneg_teamwork()
     // chassis.turnToPoint(-10, 13, 1000, {.minSpeed = 5, .earlyExitRange = 3});
     // chassis.moveToPoint(-10, 13, 2000, {.minSpeed = 80, .earlyExitRange = 3});
     // set_intake_speed(127);
-    // chassis.moveToPoint(-72, -6, 2000, {.minSpeed = 40, .earlyExitRange = 3});
+    // chassis.moveToPoint(-72, -6, 2000, {.minSpeed = 100, .earlyExitRange = 5});
     // swiper.set_value(true);
-    // pros::delay(800);
+    // pros::delay(600);
     // set_intake_speed(0);
-    // chassis.turnToHeading(50, 3000, {.direction = lemlib::AngularDirection::CCW_COUNTERCLOCKWISE, .minSpeed = 100}, false);
-    // swiper.set_value(false);
+    // chassis.turnToHeading(55, 3000, {.direction = lemlib::AngularDirection::CCW_COUNTERCLOCKWISE, .minSpeed = 100}, false);
+    // chassis.moveDistance(13, 1000, {.forwards = false, .minSpeed = 65, .earlyExitRange = 2}, false);
     // mogo.set_value(false);
-    // chassis.turnToPoint(-42.5, 18, 1000, {.minSpeed = 5, .earlyExitRange = 3});
-    // chassis.moveToPoint(-42.5, 18, 2000, {.minSpeed = 30, .earlyExitRange = 3});
+    // chassis.moveDistance(13, 1000, {.minSpeed = 65, .earlyExitRange = 2}, false);
+    // chassis.turnToHeading(180, 1000);
 }
 
 // void blue2(){

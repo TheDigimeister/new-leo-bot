@@ -30,9 +30,9 @@ void redneg_teamwork()
     set_intake_speed(127);
     chassis.turnToPoint(-34, 41, 1000, {.minSpeed = 5, .earlyExitRange = 3});
     chassis.moveToPoint(-34, 41, 1000, {.minSpeed = 20, .earlyExitRange = 3});
-    chassis.turnToPoint(-48, 41, 1000, {.minSpeed = 20, .earlyExitRange = 3});
-    chassis.moveToPoint(-48, 41, 1000, {.minSpeed = 20, .earlyExitRange = 3}, false);
-    chassis.moveToPoint(-12, 31, 1000, {.forwards = false, .minSpeed = 20, .earlyExitRange = 3});
+    chassis.turnToPoint(-48, 42.5, 1000, {.minSpeed = 20, .earlyExitRange = 3});
+    chassis.moveToPoint(-48, 42.5, 1000, {.minSpeed = 20, .earlyExitRange = 3}, false);
+    chassis.moveToPoint(-12, 33.5, 1000, {.forwards = false, .minSpeed = 20, .earlyExitRange = 3});
     set_intake_speed(80);
     chassis.turnToPoint(-36, 28, 1000, {.minSpeed = 20, .earlyExitRange = 3}, false);
     set_intake_speed(127);
@@ -70,15 +70,15 @@ void redneg_teamwork()
     // chassis.turnToPoint(10, 13, 1000, {.minSpeed = 5, .earlyExitRange = 3});
     // chassis.moveToPoint(10, 13, 2000, {.minSpeed = 80, .earlyExitRange = 3});
     // set_intake_speed(127);
-    // chassis.moveToPoint(72, -6, 2000, {.minSpeed = 40, .earlyExitRange = 3});
+    // chassis.moveToPoint(72, -6, 2000, {.minSpeed = 100, .earlyExitRange = 3});
     // swiper.set_value(true);
     // pros::delay(800);
     // set_intake_speed(0);
-    // chassis.turnToHeading(-50, 2000, {.minSpeed = 100}, false);
-    // swiper.set_value(false);
+    // chassis.turnToHeading(-55, 2000, {.minSpeed = 100}, false);
+    // chassis.moveDistance(13, 1000, {.forwards = false, .minSpeed = 65, .earlyExitRange = 2}, false);
     // mogo.set_value(false);
-    // chassis.turnToPoint(42, 25, 1000, {.minSpeed = 5, .earlyExitRange = 3});
-    // chassis.moveToPoint(42, 25, 2000, {.minSpeed = 30, .earlyExitRange = 3});
+    // chassis.moveDistance(13, 1000, {.minSpeed = 65, .earlyExitRange = 2}, false);
+    // chassis.turnToHeading(180, 1000);
 }
 // void red1(){
 //    // setup

@@ -203,8 +203,8 @@ void set_intake_speed(int speed, bool jam)
 
 void fast_move(float x, float y, int timeout, bool async = true)
 {
-  chassis.moveToPoint(x, y, timeout, {.minSpeed = 30, .earlyExitRange = 10});
-  chassis.moveToPoint(x, y, timeout, {.maxSpeed = 30, .minSpeed = 5, .earlyExitRange = 3}, async);
+  chassis.moveToPoint(x, y, timeout, {.minSpeed = 60, .earlyExitRange = 10});
+  chassis.moveToPoint(x, y, timeout, {.maxSpeed = 30, .minSpeed = 10, .earlyExitRange = 3}, async);
 }
 
 // void init_driver_intake(){

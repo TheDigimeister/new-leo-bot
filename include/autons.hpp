@@ -16,6 +16,6 @@ void redpos_teamwork_nograb3rdmogo();
 void skills();
 void test();
 void reset_position(int angle);
-void redpos_goldrush();
-void bluepos_goldrush();
+void redneg_finals();
+void blueneg_finals();
 #endif
