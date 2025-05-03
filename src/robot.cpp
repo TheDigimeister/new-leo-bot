@@ -7,12 +7,12 @@ pros::ADIDigitalOut swiper('G');
 pros::ADIDigitalOut sort_thrower('A');
 
 pros::Rotation arm_control(-16);
-pros::Rotation intakerotation(18);
+pros::Rotation intakerotation(19); // need to correct this
 pros::Vision vision(7);
 pros::Distance distance(8);
 pros::Distance top_distance(3);
-pros::Distance mogo_distance(19);
-pros::Optical ring_color(14);
+pros::Distance mogo_distance(18);
+// pros::Optical ring_color(14);
 
 // pros::Distance ladybrown_dist(8);
 

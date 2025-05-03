@@ -13,7 +13,7 @@ int test_auton = SKILLS;
 bool mobostate = false;
 bool moboon = false;
 bool mobooff = false;
-bool disableautoclamp = false;
+bool enableAutoClamp = true; // name changed to enableAutoClamp by Sean (05.03.2025)
 bool autoclamped = false;
 pros::Mutex intakemutex;
 /**
@@ -287,50 +287,82 @@ void opcontrol()
 		}
 #pragma endregion SWIPER
 
+// #pragma region MOGOCLAMP
+// // Original MOGOCLAMP code by Leo (05.03.2025)
+// 		if (master.get_digital(DIGITAL_A) && mobostate == false)
+// 		{
+// 			mogo.set_value(true);
+// 			moboon = true;
+// 		}
+// 		else if (master.get_digital(DIGITAL_A) != 1 && moboon == true)
+// 		{
+// 			mobostate = true;
+// 			moboon = false;
+// 		}
+// 		if (mogo_seated() && mobostate == false && disableautoclamp == false)
+// 		{
+// 			mogo.set_value(true);
+// 			pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ".");
+// 			mobostate = true;
+// 			autoclamped = true;
+// 		}
+// 		if (master.get_digital(DIGITAL_A) && mobostate == true)
+// 		{
+// 			mogo.set_value(false);
+// 			intakeOn(-127, 70);
+// 			if (autoclamped == true)
+// 			{
+// 				disableautoclamp = true;
+// 				autoclamped = false;
+// 			}
+// 			mobooff = true;
+// 		}
+// 		else if (master.get_digital(DIGITAL_A) != 1 && mobooff == true)
+// 		{
+// 			mobostate = false;
+// 			mobooff = false;
+// 		}
+// 		if (disableautoclamp == true && !mogo_seated())
+// 		{
+// 			disableautoclamp = false;
+// 		}
+// #pragma endregion MOGOCLAMP
+
 #pragma region MOGOCLAMP
+// New MOGOCLAMP code by Sean (05.03.2025)
+
 		if (master.get_digital(DIGITAL_A) && mobostate == false)
 		{
 			mogo.set_value(true);
-			moboon = true;
-		}
-		else if (master.get_digital(DIGITAL_A) != 1 && moboon == true)
-		{
 			mobostate = true;
-			moboon = false;
 		}
-		if (mogo_seated() && mobostate == false && disableautoclamp == false)
+
+		else if (master.get_digital(DIGITAL_A) && mobostate == true)
+		{
+			mogo.set_value(false);
+			intakeOn(-127, 70);
+			mobostate = false;
+			enableAutoClamp = false;
+			// pros::delay(1000);
+			// enableAutoClamp = true;
+		}
+
+		if (mogo_seated() && mobostate == false && enableAutoClamp == true)
 		{
 			mogo.set_value(true);
 			pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ".");
 			mobostate = true;
-			autoclamped = true;
+			enableAutoClamp = false;
 		}
-		if (master.get_digital(DIGITAL_A) && mobostate == true)
-		{
-			mogo.set_value(false);
-			intakeOn(-127, 70);
-			if (autoclamped == true)
-			{
-				disableautoclamp = true;
-				autoclamped = false;
-			}
-			mobooff = true;
-		}
-		else if (master.get_digital(DIGITAL_A) != 1 && mobooff == true)
-		{
-			mobostate = false;
-			mobooff = false;
-		}
-		if (disableautoclamp == true && !mogo_seated())
-		{
-			disableautoclamp = false;
-		}
+
+		if (!mogo_seated()) enableAutoClamp = true;
+
 #pragma endregion MOGOCLAMP
 
 		if (master.get_digital(DIGITAL_B) && !b_pressed)
 		{
 			// swiper_flag = !swiper_flag;
-			enablesort = false;
+			// enablesort = false;
 			b_pressed = true;
 			// arm_mutex.lock();
 			arm_move = false;
@@ -418,7 +450,8 @@ void opcontrol()
 				intake_on = true;
 				arm_move=true; 
 				intakemutex.unlock(); 
-				enablesort=true; });
+				// enablesort=true; 
+			});
 		}
 
 		else if (master.get_digital(DIGITAL_B) != 1 && b_pressed)
