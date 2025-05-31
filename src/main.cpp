@@ -335,6 +335,7 @@ void opcontrol()
 		{
 			mogo.set_value(true);
 			mobostate = true;
+			enableAutoClamp = false;
 		}
 
 		else if (master.get_digital(DIGITAL_A) && mobostate == true)
@@ -343,8 +344,6 @@ void opcontrol()
 			intakeOn(-127, 70);
 			mobostate = false;
 			enableAutoClamp = false;
-			// pros::delay(1000);
-			// enableAutoClamp = true;
 		}
 
 		if (mogo_seated() && mobostate == false && enableAutoClamp == true)

@@ -4,7 +4,7 @@ pros::Task *sort_task = nullptr;
 pros::Mutex intake_control;
 int sorting = 0;
 int intake_speed = 0;
-bool enablesort = true;
+// bool enablesort = true;
 pros::vision_signature_s_t RED_SIG =
     pros::Vision::signature_from_utility(1, 6961, 9917, 8439, -373, 1017, 322, 2.5, 0);
 pros::vision_signature_s_t BLUE_SIG =
