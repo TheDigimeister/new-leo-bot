@@ -4,12 +4,12 @@
 true: display odometry data and will run the test auton
 false: display competition screen to choose different autons
 */
-bool testing = false;
+bool testing = true;
 bool swiperstate = false; //
 bool swiperon = false;
 bool swiperoff = false;
-int auton_status = 0;
-int test_auton = SKILLS;
+int auton_status = 9;
+int test_auton = 9;
 bool mobostate = false;
 bool moboon = false;
 bool mobooff = false;
@@ -50,7 +50,7 @@ void initialize()
 	set_intake_speed(0);
 	chassis.calibrate();
 	pros::delay(100);
-	chassis.setPose(0, 0, 0);
+	chassis.setPose(-24, -24, 0);
 	if (testing)
 	{
 		// if (test_auton < 0)
